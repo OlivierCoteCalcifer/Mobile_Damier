@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Damier</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_message">Bienvenue au jeu de dames 2023.</string>
+    <string name="message_bouton_menu">Commencer une partie</string>
 </resources>

@@ -2,14 +2,25 @@
 <project version="4">
   <component name="CheckStyle-IDEA" serialisationVersion="2">
     <checkstyleVersion>10.12.4</checkstyleVersion>
-    <scanScope>JavaOnly</scanScope>
+    <scanScope>AllSourcesWithTests</scanScope>
     <copyLibs>true</copyLibs>
     <option name="thirdPartyClasspath" />
-    <option name="activeLocationIds" />
+    <option name="activeLocationIds">
+      <option value="bb657ca5-b750-4c1b-87b1-3b5dcd4dc251" />
+    </option>
     <option name="locations">
       <list>
         <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
         <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
+        <ConfigurationLocation id="bb657ca5-b750-4c1b-87b1-3b5dcd4dc251" type="HTTP_URL" scope="All" description="CstjeanCheckStyle">
+          https://gtsthilaire.github.io/cstjean-checkstyle-checks/cstjean_checks.xml
+          <option name="properties">
+            <map>
+              <entry key="org.checkstyle.google.suppressionfilter.config" value="" />
+              <entry key="org.checkstyle.google.suppressionxpathfilter.config" value="" />
+            </map>
+          </option>
+        </ConfigurationLocation>
       </list>
     </option>
   </component>
