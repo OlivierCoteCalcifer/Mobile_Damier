@@ -1,0 +1,21 @@
+To do List:
+
+- Vue qui demande le nom des 2 joueurs pour ensuite l'afficher dans un textView durant le gameplay.
+- Si on touche a un pion on montre les possibilités.
+- Lorsque la partie fini. Message pour le vainqueur et à l'écran de la saisie de noms.
+
+
+**********************************************************************************************
+*** Doit fonctionner sur Pixel 5 Api 24 minimum mais utiliser API 33.
+** Doit fonctionner en mode portrait et landscape (onSavedInstance, onCreatedView)
+
+**********************************************************************************************
+
+
+
+
+
+
+**********************************************************************************************
+----> Il y a un screenshot des conditions du TP 2 dans le dossier parent du projet. <----
+**********************************************************************************************
