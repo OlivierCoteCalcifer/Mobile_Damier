@@ -1,23 +1,23 @@
 package cstjean.mobile.damier;
 
+import junit.framework.TestCase;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
-import junit.framework.TestCase;
 
 import cstjean.mobile.damier.classe.Dames;
 import cstjean.mobile.damier.classe.Pion;
-import cstjean.mobile.damier.classe.SingletonJeuDeDames;
 
 /**
  * Cette classe de test effectue les actions du jeu de dames
  * pour verifier son bon fonctionnement.
  */
-public class TestJeuDeDames extends TestCase {
+public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Variable du jeu de dames pour les tests.
      */
-    private SingletonJeuDeDames jeu = SingletonJeuDeDames.getInstance();
+    private cstjean.mobile.damier.classe.SingletonJeuDeDames jeu = cstjean.mobile.damier.classe.SingletonJeuDeDames.getInstance();
 
     /**
      * On initialise un jeu de dames et initialise le damier.
@@ -422,22 +422,22 @@ public class TestJeuDeDames extends TestCase {
      * Verifier si les fonctions dans l'enum retourne la bonne valeur ainsi que le bon nom.
      */
     public void testEnumDirection() {
-        SingletonJeuDeDames.Direction[] directionArray;
-        directionArray = SingletonJeuDeDames.Direction.getDirectionBasStartBlanc();
+        cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction[] directionArray;
+        directionArray = cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getDirectionBasStartBlanc();
         assertEquals("[BAS_DROIT_START_BLANC, BAS_GAUCHE_START_BLANC]", Arrays.toString(directionArray));
 
-        assertEquals("[6, 5]", SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
-        directionArray = SingletonJeuDeDames.Direction.getDirectionBasStartNoir();
+        assertEquals("[6, 5]", cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
+        directionArray = cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getDirectionBasStartNoir();
         assertEquals("[BAS_DROIT_START_NOIR, BAS_GAUCHE_START_NOIR]", Arrays.toString(directionArray));
 
-        assertEquals("[5, 4]", SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
-        directionArray = SingletonJeuDeDames.Direction.getDirectionHautStartNoir();
+        assertEquals("[5, 4]", cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
+        directionArray = cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getDirectionHautStartNoir();
         assertEquals("[HAUT_GAUCHE_START_NOIR, HAUT_DROIT_START_NOIR]", Arrays.toString(directionArray));
 
-        assertEquals("[-6, -5]", SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
-        directionArray = SingletonJeuDeDames.Direction.getDirectionHautStartBlanc();
+        assertEquals("[-6, -5]", cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
+        directionArray = cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getDirectionHautStartBlanc();
         assertEquals("[HAUT_GAUCHE_START_BLANC, HAUT_DROIT_START_BLANC]", Arrays.toString(directionArray));
 
-        assertEquals("[-5, -4]", SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
+        assertEquals("[-5, -4]", cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
     }
 }

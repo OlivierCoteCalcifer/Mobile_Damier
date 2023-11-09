@@ -1,9 +1,11 @@
 package cstjean.mobile.damier;
 
+import junit.framework.TestCase;
+
+import java.util.TreeMap;
+
 import cstjean.mobile.damier.classe.Damier;
 import cstjean.mobile.damier.classe.Pion;
-import java.util.TreeMap;
-import junit.framework.TestCase;
 
 /**
  * Ceci est la classe TestDamier avec les tests nécessaires pour valider la classe Damier.

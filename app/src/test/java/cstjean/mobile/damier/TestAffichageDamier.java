@@ -1,9 +1,10 @@
 package cstjean.mobile.damier;
 
+import junit.framework.TestCase;
+
 import cstjean.mobile.damier.classe.AffichageDamier;
 import cstjean.mobile.damier.classe.Damier;
 import cstjean.mobile.damier.classe.Pion;
-import junit.framework.TestCase;
 
 /**
  * Ces tests voient si l'affichage du damier est conforme aux normes.

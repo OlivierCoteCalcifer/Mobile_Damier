@@ -1,6 +1,7 @@
 package cstjean.mobile.damier;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 /**

@@ -1,8 +1,8 @@
 package cstjean.mobile.damier;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class DamierActivity extends AppCompatActivity {
 
