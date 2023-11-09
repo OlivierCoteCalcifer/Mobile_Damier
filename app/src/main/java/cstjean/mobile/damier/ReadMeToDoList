@@ -18,7 +18,7 @@ To do List:
 **********************************************************************************************
 Thomas : Réparer les tests pour que chaque test fonctionne et initialiser l'instance pour le
          scénario du test.
-Olivier :
+Olivier : Verifier que l'activity du menu fonctionne et transitionne vers le jeu.
 
 
 **********************************************************************************************
