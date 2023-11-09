@@ -1,6 +1,16 @@
 package cstjean.mobile.damier;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import junit.framework.TestCase;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -13,7 +23,7 @@ import cstjean.mobile.damier.classe.Pion;
  * Cette classe de test effectue les actions du jeu de dames
  * pour verifier son bon fonctionnement.
  */
-public class TestSingletonJeuDeDames extends TestCase {
+public class TestSingletonJeuDeDames{
     /**
      * Variable du jeu de dames pour les tests.
      */
@@ -22,6 +32,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * On initialise un jeu de dames et initialise le damier.
      */
+    @Before
     public void setUp() {
         jeu.reset();
     }
@@ -29,8 +40,8 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Test pour la fonction reset.
      */
+    @Test
     public void testInitialisationDamier() {
-        jeu.reset();
         assertEquals(40, jeu.getDamier().getNbPions());
     }
 
@@ -38,7 +49,9 @@ public class TestSingletonJeuDeDames extends TestCase {
      * On vérifie si on peut ajouter un pion en commencant par le jeu de dames et remontant
      * jusqu'au damier.
      */
+    @Test
     public void testAjoutPion() {
+        jeu.reset();
         Pion pionBlanc = new Pion(Pion.Couleur.Blanc);
         jeu.getDamier().ajouterPion(25, pionBlanc);
         assertEquals(pionBlanc, jeu.getDamier().getListPion().get(25));
@@ -47,7 +60,9 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie si la methode empêche les mouvements invalides.
      */
+    @Test
     public void testDeplacementInvalideCaseVide() {
+        jeu.reset();
         try {
             jeu.bouger(30, 35);
         } catch (IllegalArgumentException exMess) {
@@ -58,7 +73,9 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie si on ne peut pas prendre de pion à reculons.
      */
+    @Test
     public void testCaptureInvalidePasDePionAdverse() {
+        jeu.reset();
         try {
             jeu.bouger(35, 30);
             jeu.prisePion(20, 24, 29);
@@ -70,6 +87,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie le tour du joueur.
      */
+    @Test
     public void testTourApresMouvementInvalide() {
         try {
             jeu.bouger(35, 36);
@@ -82,6 +100,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie l'invalidité d'une prise d'un pion de la même couleur.
      */
+    @Test
     public void testPrisePionMemeCouleur() {
         jeu.reset();
         try {
@@ -96,6 +115,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie une prise de pion invalide.
      */
+    @Test
     public void testPrisePionInvalide() {
         jeu.reset();
         Pion pionNoir = new Pion(Pion.Couleur.Noir);
@@ -113,6 +133,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie si on sélectionne le bon pion selon le bon tour du joueur.
      */
+    @Test
     public void testEssayerDeDeplacerPionAdverse() {
         jeu.reset();
         try {
@@ -126,6 +147,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie les deplacements invalide.
      */
+    @Test
     public void testDeplacementInvalidePion() {
         jeu.reset();
         try {
@@ -155,6 +177,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie les deplacements d'une dame.
      */
+    @Test
     public void testDeplacementDame() {
         jeu.reset();
         Pion pionBlanc = new Dames(Pion.Couleur.Blanc);
@@ -188,7 +211,9 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie les prises par la dame.
      */
+    @Test
     public void testCaptureAvecDame() {
+        jeu.reset();
         Dames dameBlanche = new Dames(Pion.Couleur.Blanc);
         jeu.getDamier().retirerPion(15);
         jeu.getDamier().ajouterPion(24, dameBlanche);
@@ -201,6 +226,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie si la prise est invalide.
      */
+    @Test
     public void testCaptureAvecDameInvalide() {
         Dames dameBlanche = new Dames(Pion.Couleur.Blanc);
         jeu.getDamier().ajouterPion(25, dameBlanche);
@@ -209,7 +235,9 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie la transformation du pion en dames dans le jeu de dames.
      */
+    @Test
     public void testDeplacementPionEnDames() {
+        jeu.reset();
         Pion pionBlanc = new Pion(Pion.Couleur.Blanc);
         Pion pionNoir = new Pion(Pion.Couleur.Noir);
         jeu.getDamier().ajouterPion(41, pionNoir);
@@ -223,6 +251,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie la reinitialisation du jeu de dames.
      */
+    @Test
     public void testReset() {
         jeu.reset();
         assertTrue(jeu.getEstTourBlanc());
@@ -232,6 +261,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie l'historique des mouvements.
      */
+    @Test
     public void testHistoriquePartieMouvement() {
         jeu.reset();
         jeu.bouger(34, 30);
@@ -250,6 +280,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie l'historique pour les prises.
      */
+    @Test
     public void testHistoriquePartiePrise() {
         jeu.reset();
         Pion pionNoir = new Pion(Pion.Couleur.Noir);
@@ -270,6 +301,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie le callback des mouvements.
      */
+    @Test
     public void testRetourPartieMouvement() {
         jeu.reset();
         jeu.bouger(34, 30);
@@ -287,6 +319,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie le callback des prises.
      */
+    @Test
     public void testRetourPartiePrise() {
         jeu.reset();
         Pion pionNoir = new Pion(Pion.Couleur.Noir);
@@ -301,6 +334,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie si une position est valide.
      */
+    @Test
     public void testEstPositionValide() {
         assertTrue(jeu.estPositionValide(1));  // Supposons que 0 est une position valide
         assertFalse(jeu.estPositionValide(100));  // Supposons que 100 est une position invalide
@@ -309,6 +343,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie si une partie est terminée.
      */
+    @Test
     public void testEstPartietermine() {
         jeu.reset();
         assertFalse(jeu.estPartieTerminee());
@@ -331,8 +366,8 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifie si une partie est terminée.
      */
+    @Test
     public void testMouvementsPossiblesDames() {
-        jeu.reset();
         jeu.reset();
         Dames dameBlanc = new Dames(Pion.Couleur.Blanc);
         TreeMap<Integer, Pion> map = jeu.getPionRestants();
@@ -413,6 +448,7 @@ public class TestSingletonJeuDeDames extends TestCase {
      * Vérifie si après une prise, on tombe sur la bonne case. Si les entrées sont mauvaises.
      * On retourne 0.
      */
+    @Test
     public void testgetFinalPositionPrise() {
         jeu.reset();
         assertEquals(0, jeu.getFinalPositionPrise(22, 36));
@@ -421,6 +457,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     /**
      * Verifier si les fonctions dans l'enum retourne la bonne valeur ainsi que le bon nom.
      */
+    @Test
     public void testEnumDirection() {
         cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction[] directionArray;
         directionArray = cstjean.mobile.damier.classe.SingletonJeuDeDames.Direction.getDirectionBasStartBlanc();
