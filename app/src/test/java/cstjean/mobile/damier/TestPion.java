@@ -1,8 +1,7 @@
 package cstjean.mobile.damier;
 
-import junit.framework.TestCase;
-
 import cstjean.mobile.damier.classe.Pion;
+import junit.framework.TestCase;
 
 /**
  * Cette classe test la creation des pions des joueurs.

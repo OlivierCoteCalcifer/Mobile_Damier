@@ -17,6 +17,10 @@ public class SingletonJeuDeDames {
      */
     private static SingletonJeuDeDames instance = null;
     /**
+     * Cette variable est le damier.
+     */
+    private static Damier damier;
+    /**
      * Cette variable est l'historique de déplacement selon la notation manoury.
      */
     private final List<String> historiqueDeplacementDamier = new ArrayList<>();
@@ -25,18 +29,14 @@ public class SingletonJeuDeDames {
      */
     private final ArrayList<Object[]> listePionsPris = new ArrayList<>();
     /**
-     * Cette variable boolean gere le tour du joueur.
-     */
-    private boolean estTourBlanc = true;
-    /**
      * Cette variable représente les contours du board.
      */
     private final List<Integer> borderBoard =
             Arrays.asList(1, 2, 3, 4, 5, 6, 16, 26, 36, 46, 47, 48, 49, 50, 45, 35, 25, 15);
     /**
-     * Cette variable est le damier.
+     * Cette variable boolean gere le tour du joueur.
      */
-    private static Damier damier;
+    private boolean estTourBlanc = true;
 
     /**
      * Le constructeur du jeu de dames instantie un damier.
@@ -631,10 +631,10 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionStartBlanc() {
             return new Direction[]{
-                    BAS_DROIT_START_BLANC,
-                    BAS_GAUCHE_START_BLANC,
-                    HAUT_GAUCHE_START_BLANC,
-                    HAUT_DROIT_START_BLANC
+                BAS_DROIT_START_BLANC,
+                BAS_GAUCHE_START_BLANC,
+                HAUT_GAUCHE_START_BLANC,
+                HAUT_DROIT_START_BLANC
             };
         }
 
@@ -646,10 +646,10 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionStartNoir() {
             return new Direction[]{
-                    BAS_DROIT_START_NOIR,
-                    BAS_GAUCHE_START_NOIR,
-                    HAUT_GAUCHE_START_NOIR,
-                    HAUT_DROIT_START_NOIR
+                BAS_DROIT_START_NOIR,
+                BAS_GAUCHE_START_NOIR,
+                HAUT_GAUCHE_START_NOIR,
+                HAUT_DROIT_START_NOIR
             };
         }
 
@@ -661,8 +661,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionBasStartBlanc() {
             return new Direction[]{
-                    BAS_DROIT_START_BLANC,
-                    BAS_GAUCHE_START_BLANC,
+                BAS_DROIT_START_BLANC,
+                BAS_GAUCHE_START_BLANC,
             };
         }
 
@@ -674,8 +674,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionBasStartNoir() {
             return new Direction[]{
-                    BAS_DROIT_START_NOIR,
-                    BAS_GAUCHE_START_NOIR,
+                BAS_DROIT_START_NOIR,
+                BAS_GAUCHE_START_NOIR,
             };
         }
 
@@ -687,8 +687,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionHautStartBlanc() {
             return new Direction[]{
-                    HAUT_GAUCHE_START_BLANC,
-                    HAUT_DROIT_START_BLANC
+                HAUT_GAUCHE_START_BLANC,
+                HAUT_DROIT_START_BLANC
             };
         }
 
@@ -700,18 +700,9 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionHautStartNoir() {
             return new Direction[]{
-                    HAUT_GAUCHE_START_NOIR,
-                    HAUT_DROIT_START_NOIR
+                HAUT_GAUCHE_START_NOIR,
+                HAUT_DROIT_START_NOIR
             };
-        }
-
-        /**
-         * Getter de la valeur d'un enum.
-         *
-         * @return La valeur de l'enum
-         */
-        public int getValue() {
-            return value;
         }
 
         /**
@@ -726,6 +717,15 @@ public class SingletonJeuDeDames {
                 result.add(direction.getValue());
             }
             return result;
+        }
+
+        /**
+         * Getter de la valeur d'un enum.
+         *
+         * @return La valeur de l'enum
+         */
+        public int getValue() {
+            return value;
         }
     }
 }

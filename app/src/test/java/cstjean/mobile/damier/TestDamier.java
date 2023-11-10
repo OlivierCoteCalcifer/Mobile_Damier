@@ -1,11 +1,9 @@
 package cstjean.mobile.damier;
 
-import junit.framework.TestCase;
-
-import java.util.TreeMap;
-
 import cstjean.mobile.damier.classe.Damier;
 import cstjean.mobile.damier.classe.Pion;
+import java.util.TreeMap;
+import junit.framework.TestCase;
 
 /**
  * Ceci est la classe TestDamier avec les tests nécessaires pour valider la classe Damier.
@@ -55,11 +53,13 @@ public class TestDamier extends TestCase {
      * dans le damier et verifie par la suite sa position.
      */
     public void testCreer() {
-        assertEquals(0, damier.getListPion().size()); // Verifie la grosseur du damier.
+        // Verifie la grosseur du damier.
+        assertEquals(0, damier.getListPion().size());
         damier.ajouterPion(20, pionBlanc);
         damier.ajouterPion(3, pionNoir);
+        // Verifie que la position 20 contient un blanc.
         assertEquals(Pion.Couleur.Blanc,
-                damier.getListPion().get(20).getCouleurPion());  // Verifie que la position 20 contient un blanc.
+                damier.getListPion().get(20).getCouleurPion());
         assertEquals(Pion.Couleur.Noir,
                 damier.getListPion().get(3).getCouleurPion());
         assertEquals(2, damier.getNbPions());

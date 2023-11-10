@@ -1,7 +1,14 @@
 <resources>
     <string name="app_name">Damier</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_message">Bienvenue \n au jeu de dames 2023</string>
     <string name="message_bouton_menu">Commencer une partie</string>
+    <string name="message_joueur">Au tour de</string>
+    <string name="text_bouton">Retour en arrière</string>
+    <string name="pion_blanc">"Pions blanc restants: "</string>
+    <string name="pion_noir">"Pions noir restants: "</string>
+    <string name="msg_btn_validation_1">Valider joueur 1</string>
+    <string name="msg_validation_1">Entrez le nom du joueur 1</string>
+    <string name="msg_validation_2">Entrez le nom du joueur 2</string>
+    <string name="msg_btn_validation_2">Valider joueur 2</string>
 </resources>

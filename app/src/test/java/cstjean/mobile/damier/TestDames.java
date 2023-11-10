@@ -1,10 +1,9 @@
 package cstjean.mobile.damier;
 
-import junit.framework.TestCase;
-
 import cstjean.mobile.damier.classe.Dames;
 import cstjean.mobile.damier.classe.Damier;
 import cstjean.mobile.damier.classe.Pion;
+import junit.framework.TestCase;
 
 /**
  * Cette classe de test execute pour valider la class de pour des dames.
