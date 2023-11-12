@@ -488,7 +488,7 @@ public class SingletonJeuDeDames {
     /**
      * Vérifie si la partie est terminée.
      *
-     * @return Vrai si la partie est terminée, faux sinon.
+     * @return Vrai si la partie est terminée, faux sinon on continue.
      */
     public boolean estPartieTerminee() {
         TreeMap<Integer, Pion> map = getPionRestants();

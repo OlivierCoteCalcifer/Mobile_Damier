@@ -16,9 +16,29 @@ To do List:
 **********************************************************************************************
 ----> TODO: <----
 **********************************************************************************************
-Thomas : Réparer les tests pour que chaque test fonctionne et initialiser l'instance pour le
+Mettre des XXX quand la tâche est terminé.
+
+Olivier : XXXXXXXX --> Creation des vues et fragments. Design des fragments et bon fonctionnement.
+          XXXXXXXX --> Transfert des noms de joueurs vers le fragment Damier.
+          XXXXXXXX --> Transfert de la classe Jeu de dames vers SingletonJeuDeDames.
+          XXXXXXXX --> Ajout des tests nécessaires pour le singleton.
+          XXXXXXXX --> Modification du AndroidManifest pour gérer les activities et leur priorité.
+
+          (Deadline: 14 novembre)
+          XXXXXXXX --> Verifier que l'activity du menu fonctionne et transitionne vers le jeu avec
+          XXXXXXXX     le flip d'orientation.
+          XXXXXXXX --> Ajouter les images des pièces dans le drawable.
+          XXXXXXXX --> Corriger la boucle pour la génération du board.
+          --> Faire la loop pour le savedOnInstance et onCreateView pour la transition d'orientation
+              d'appareil.
+          --> Faire le onClickListener avec toutes les fonctions du damier.
+
+
+Thomas : XXXXXXXX --> Modifications des images pour les pièces.
+         ( Deadline: 14 novembre)
+         ---> Réparer les tests pour que chaque test fonctionne et initialiser l'instance pour le
          scénario du test.
-Olivier : Verifier que l'activity du menu fonctionne et transitionne vers le jeu.
+
 
 
 **********************************************************************************************

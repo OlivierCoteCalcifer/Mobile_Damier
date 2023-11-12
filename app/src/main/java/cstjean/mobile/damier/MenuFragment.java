@@ -3,6 +3,7 @@ package cstjean.mobile.damier;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,24 +48,32 @@ public class MenuFragment extends Fragment {
      * Callback pour se promener entre les activities.
      */
     private Callbacks callbacks = null;
+    /**
+     * Toast pour afficher un message d'erreur dans le menu.
+     */
+    private Toast toastErreur = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Set up pour le toast du message d'erreur dans le menu.
+        toastErreur = Toast.makeText(getContext(), "Entrez un nom de joueur.",
+                Toast.LENGTH_SHORT);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
-
         int indexCourant = callbacks.getIndexCourant();
+
         // On va chercher tous les elements du menu.
         LinearLayout menuLayout = view.findViewById(R.id.menu_LinearLayout);
         Button menuButton = view.findViewById(R.id.menu_Bouton);
         TextView menuText = view.findViewById(R.id.menu_TextView);
         menuInput = new TextInputEditText(getContext());
-        int widthInDp = 200; // You can adjust this value as needed
+        // Ajustement pour le style du TextInputEditText
+        int widthInDp = 200;
         float scale = getResources().getDisplayMetrics().density;
         int widthInPx = (int) (widthInDp * scale + 0.5f);
 
@@ -96,8 +105,8 @@ public class MenuFragment extends Fragment {
             case 1 -> {
                 if (Objects.requireNonNull(menuInput.getText()).toString().isEmpty() &&
                         nomJoueur1 == null) {
-                    Toast.makeText(getContext(), "Entrez un nom de joueur.",
-                            Toast.LENGTH_SHORT).show();
+                    toastErreur.setGravity(Gravity.TOP|Gravity.CENTER, 0, -100);
+                    toastErreur.show();
                     break;
                 }
                 nomJoueur1 = menuInput.getText().toString();
@@ -109,11 +118,12 @@ public class MenuFragment extends Fragment {
             default -> {
                 nomJoueur2 = menuInput.getText().toString();
                 if (nomJoueur2.isEmpty()) {
-                    Toast.makeText(getContext(), "Entrez un nom de joueur.",
-                            Toast.LENGTH_SHORT).show();
+                   toastErreur.show();
                     break;
                 }
                 Intent intent = new Intent(getActivity(), DamierActivity.class);
+                intent.putExtra("nomJoueur1",nomJoueur1);
+                intent.putExtra("nomJoueur2",nomJoueur1);
                 startActivity(intent);
             }
         }
