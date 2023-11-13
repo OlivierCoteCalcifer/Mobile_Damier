@@ -1,18 +1,21 @@
 package cstjean.mobile.damier;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import java.util.List;
 
 import cstjean.mobile.damier.classe.Pion;
 import cstjean.mobile.damier.classe.SingletonJeuDeDames;
@@ -88,10 +91,14 @@ public class DamierFragment extends Fragment {
             if ((row + col) % 2 != 0) {
                 button.setId(numeroManoury);
                 button.setBackgroundColor(view.getContext().getColor(R.color.boardBlackCase));
+                int finalNumeroManoury = numeroManoury;
+                button.setOnClickListener(v -> {
+                    onClickButton(finalNumeroManoury, view);
+                });
                 numeroManoury++;
             } else {
                 button.setBackgroundColor(view.getContext().getColor(R.color.boardWhiteCase));
-                button.setEnabled(false);  // Consider if you want to disable the button
+                button.setEnabled(false);
             }
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
@@ -111,6 +118,8 @@ public class DamierFragment extends Fragment {
             String id = String.valueOf(i);
             int resId = view.getResources().getIdentifier(id, "id", view.getContext().getPackageName());
             ImageButton button = view.findViewById(resId);
+
+            // Faire un reset et passer par le jeu de dames avec Representation pour placer pion.
             if (i <= 20) {
                 Pion pionNoir = new Pion(Pion.Couleur.Noir);
                 jeuDeDames.getDamier().ajouterPion(i, pionNoir);
@@ -126,10 +135,13 @@ public class DamierFragment extends Fragment {
 
     /**
      * Cette methode va appeler les methodes nécessaire pour le fonctionnnement du jeu.
-     *
-     * @param view On prend la vue du damier.
      */
-    private void onClickButton(View view) {
-
+    private void onClickButton(int index, View view) {
+        List<Integer> mvtPossible = jeuDeDames.mouvementsPossibles(index);
+        if(mvtPossible.isEmpty()){
+            Toast.makeText(getContext(),"Aucun mouvement possible Position" + index,Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(),"Mouvement possible " + mvtPossible + index,Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -364,7 +364,8 @@ public class SingletonJeuDeDames {
     private Direction[] getDirection(Pion pion, int position) {
         int index = (position % 10 >= 1 && position % 10 <= 5) ? 0 : 1;
         return switch (pion.getRepresentation()) {
-            case 'P' -> (index == 0) ? Direction.getDirectionBasStartBlanc() :
+            case 'P' -> (index == 0) ?
+                    Direction.getDirectionBasStartBlanc() :
                     Direction.getDirectionBasStartNoir();
             case 'p' -> (index == 0) ?
                     Direction.getDirectionHautStartBlanc() :
@@ -446,7 +447,7 @@ public class SingletonJeuDeDames {
     private boolean estPionOuDame(int position) {
         char i = damier.getListPion().get(position).getRepresentation();
         return switch (i) {
-            case 'P' | 'p' -> true;
+            case 'P', 'p' -> true;
             default -> false;
         };
 
