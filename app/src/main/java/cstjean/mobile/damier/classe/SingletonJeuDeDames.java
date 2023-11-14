@@ -729,4 +729,8 @@ public class SingletonJeuDeDames {
             return value;
         }
     }
+
+    public void vider(){
+        damier.vider();
+    }
 }

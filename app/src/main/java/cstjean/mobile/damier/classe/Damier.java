@@ -107,4 +107,23 @@ public class Damier {
             }
         }
     }
+
+    /**
+     * Cette fonction vide le damier de tout les pions.
+     */
+    public void vider() {
+        for (int i = 1; i <= 51; i++) {
+            this.listPions.remove(i);
+        }
+    }
+
+    /**
+     * Cette fonction retourne un pion de la liste.
+     *
+     * @param index prend un index en paramètre.
+     * @return retourne un pion.
+     */
+    public Pion getPion(int index) {
+        return this.listPions.get(index);
+    }
 }
