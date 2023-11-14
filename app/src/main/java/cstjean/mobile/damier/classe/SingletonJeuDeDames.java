@@ -48,7 +48,6 @@ public class SingletonJeuDeDames {
         if (instance == null) {
             damier = new Damier();
             instance = new SingletonJeuDeDames();
-
         }
         return instance;
     }

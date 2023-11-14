@@ -1,7 +1,5 @@
 package cstjean.mobile.damier;
 
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -17,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import cstjean.mobile.damier.classe.Pion;
 import cstjean.mobile.damier.classe.SingletonJeuDeDames;
@@ -35,6 +32,7 @@ public class DamierFragment extends Fragment {
      * Input du deuxième joueur du menu.
      */
     private String nomJoueur2;
+    private boolean pionEnable;
     private SingletonJeuDeDames jeuDeDames = SingletonJeuDeDames.getInstance();
 
     @Override
@@ -143,21 +141,21 @@ public class DamierFragment extends Fragment {
     private void onClickButton(int index, View view) {
         List<Integer> mvtPossible = jeuDeDames.mouvementsPossibles(index);
 
-        //   resetUI();
+        resetUI();
 
         if (mvtPossible.isEmpty()) {
-            Toast.makeText(getContext(),"Aucun mouvement possible Position" + index,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Aucun mouvement possible Position" + index, Toast.LENGTH_SHORT).show();
         } else {
-            //     ajoutUIOnClick(index, view, mvtPossible);
-            Toast.makeText(getContext(),"Mouvement possible " + mvtPossible + index,Toast.LENGTH_SHORT).show();
+            ajoutUIOnClick(index, view, mvtPossible);
+            Toast.makeText(getContext(), "Mouvement possible " + mvtPossible + index, Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
      * Ajoute des marqueurs visuels sur le pion sélectionné et les mouvements possible.
      *
-     * @param index Index du pion selectionné.
-     * @param view Vue.
+     * @param index       Index du pion selectionné.
+     * @param view        Vue.
      * @param mvtPossible Liste de mouvements possibles.
      */
     private void ajoutUIOnClick(int index, View view, List<Integer> mvtPossible) {
@@ -174,13 +172,19 @@ public class DamierFragment extends Fragment {
     }
 
     private void resetUI() {
+        ImageButton moveButton = null;
         for (int i = 1; i < 51; i++) {
-            char rep = jeuDeDames.getDamier().getPion(i).getRepresentation();
-            if (rep != 'd' && rep != 'D' && rep != 'p' && rep != 'P') {
-                String btnid = String.valueOf(i);
-                int ressId = getResources().getIdentifier(btnid, "id", requireContext().getPackageName());
-                ImageButton moveButton = getView().findViewById(ressId);
-                moveButton.setImageResource(0);
+            Object rep = jeuDeDames.getDamier().getPion(i).getRepresentation();
+            String btnid = String.valueOf(i);
+            int ressId = getResources().getIdentifier(btnid, "id", requireContext().getPackageName());
+            moveButton = getView().findViewById(ressId);
+            moveButton.setImageResource(0);
+            switch (rep.toString()) {
+                case "d" -> moveButton.setImageResource(R.drawable.dame_blanche);
+                case "D" -> moveButton.setImageResource(R.drawable.dame_noir);
+                case "P" -> moveButton.setImageResource(R.drawable.pion_noir);
+                case "p" -> moveButton.setImageResource(R.drawable.pion_blanc);
+                default -> moveButton.setImageResource(0);
             }
         }
     }
