@@ -394,7 +394,7 @@ public class SingletonJeuDeDames {
         if (targetPion == null) {
             addPossibleMovements(nouvellePosition, decalage, mouvements);
         } else if (targetPion.getCouleurPion() != currentPion.getCouleurPion()) {
-            handleCaptureMouvementPossible(position, nouvellePosition, mouvements);
+            // handleCaptureMouvementPossible(position, nouvellePosition, mouvements);
             estTourBlanc = !estTourBlanc;
         }
     }

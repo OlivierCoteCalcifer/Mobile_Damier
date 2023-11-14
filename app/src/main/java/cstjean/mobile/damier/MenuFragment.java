@@ -123,7 +123,7 @@ public class MenuFragment extends Fragment {
                 }
                 Intent intent = new Intent(getActivity(), DamierActivity.class);
                 intent.putExtra("nomJoueur1",nomJoueur1);
-                intent.putExtra("nomJoueur2",nomJoueur1);
+                intent.putExtra("nomJoueur2",nomJoueur2);
                 startActivity(intent);
             }
         }

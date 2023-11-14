@@ -12,6 +12,17 @@ To do List:
 **********************************************************************************************
 
 
+**********************************************************************************************
+----> BUG : <----
+**********************************************************************************************
+
+--> Capture automatique si on bouge un pion adjacent à l'autre, si je met la ligne 397 en commentaire
+    dans Singleton, on peut plus faire de capture automatique. De plus, mouvement possible doit donner
+    la position qui passe par dessus le pion ennemi.
+    Je crois que bouger doit handle la capture et tout.
+
+
+
 
 **********************************************************************************************
 ----> TODO: <----
@@ -31,6 +42,7 @@ Olivier : XXXXXXXX --> Creation des vues et fragments. Design des fragments et b
           --> Faire la loop pour le savedOnInstance et onCreateView pour la transition d'orientation
               d'appareil.
           --> Faire le onClickListener avec toutes les fonctions du damier.
+          --> Mouvements fonctionnels
 
 
 Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10 novembre)
@@ -38,6 +50,9 @@ Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10
          XXXXXXXX --> Images plus claire pour le pion Blanc (Terminé le 13 novembre)
          XXXXXXXX --> Réparer les tests pour que chaque test fonctionne et initialiser l'instance pour le
             scénario du test. (Terminé le 13 novembre)
+
+
+Both:
 
          --> Supprimer les commentaire du test estPartieTerminee dans TestSingletonJeuDeDames.
 
