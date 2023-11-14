@@ -17,7 +17,7 @@ public class TestComplet {
         suite.addTestSuite(TestDamier.class);
         suite.addTestSuite(TestAffichageDamier.class);
         suite.addTestSuite(TestDames.class);
-        // suite.addTestSuite(TestSingletonJeuDeDames.class);
+        suite.addTestSuite(TestSingletonJeuDeDames.class);
         return suite;
     }
 }

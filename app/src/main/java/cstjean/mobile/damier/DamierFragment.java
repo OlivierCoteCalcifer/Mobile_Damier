@@ -1,5 +1,6 @@
 package cstjean.mobile.damier;
 
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -16,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import cstjean.mobile.damier.classe.Pion;
 import cstjean.mobile.damier.classe.SingletonJeuDeDames;
@@ -119,6 +121,8 @@ public class DamierFragment extends Fragment {
             int resId = view.getResources().getIdentifier(id, "id", view.getContext().getPackageName());
             ImageButton button = view.findViewById(resId);
 
+            button.setBackgroundColor(view.getContext().getColor(R.color.boardBlackCase));
+
             // Faire un reset et passer par le jeu de dames avec Representation pour placer pion.
             if (i <= 20) {
                 Pion pionNoir = new Pion(Pion.Couleur.Noir);
@@ -138,10 +142,46 @@ public class DamierFragment extends Fragment {
      */
     private void onClickButton(int index, View view) {
         List<Integer> mvtPossible = jeuDeDames.mouvementsPossibles(index);
-        if(mvtPossible.isEmpty()){
+
+        //   resetUI();
+
+        if (mvtPossible.isEmpty()) {
             Toast.makeText(getContext(),"Aucun mouvement possible Position" + index,Toast.LENGTH_SHORT).show();
         } else {
+            //     ajoutUIOnClick(index, view, mvtPossible);
             Toast.makeText(getContext(),"Mouvement possible " + mvtPossible + index,Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Ajoute des marqueurs visuels sur le pion sélectionné et les mouvements possible.
+     *
+     * @param index Index du pion selectionné.
+     * @param view Vue.
+     * @param mvtPossible Liste de mouvements possibles.
+     */
+    private void ajoutUIOnClick(int index, View view, List<Integer> mvtPossible) {
+        String btnid = String.valueOf(index);
+        int ressId = getResources().getIdentifier(btnid, "id", requireContext().getPackageName());
+        ImageButton moveButton = getView().findViewById(ressId);
+        moveButton.setBackgroundColor(moveButton.getContext().getColor(R.color.black));
+        for (Integer element : mvtPossible) {
+            String id = String.valueOf(element);
+            int resId = getResources().getIdentifier(id, "id", requireContext().getPackageName());
+            ImageButton mvtPossibleBoutons = getView().findViewById(resId);
+            mvtPossibleBoutons.setImageResource(R.drawable.pion_possible);
+        }
+    }
+
+    private void resetUI() {
+        for (int i = 1; i < 51; i++) {
+            char rep = jeuDeDames.getDamier().getPion(i).getRepresentation();
+            if (rep != 'd' && rep != 'D' && rep != 'p' && rep != 'P') {
+                String btnid = String.valueOf(i);
+                int ressId = getResources().getIdentifier(btnid, "id", requireContext().getPackageName());
+                ImageButton moveButton = getView().findViewById(ressId);
+                moveButton.setImageResource(0);
+            }
         }
     }
 }
