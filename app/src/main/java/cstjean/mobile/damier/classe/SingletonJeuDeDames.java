@@ -133,6 +133,16 @@ public class SingletonJeuDeDames {
                     pion = new Dames(Pion.Couleur.Noir);
                     damier.ajouterDames(positionArrivee, pion, positionDepart);
                 }
+                int finalPos = getFinalPositionPrise(positionDepart, positionArrivee);
+                Pion pionFinish = damier.getPion(finalPos);
+                Pion pionArrivee = damier.getPion(positionArrivee);
+                if (pionFinish == null && pionArrivee != null &&
+                        pionArrivee.getCouleurPion() != pion.getCouleurPion()) {
+                    List<Integer> mvt = mouvementsPossibles(positionDepart);
+                    handleCaptureMouvementPossible(positionDepart, positionArrivee, mvt);
+                    manouryHistoryBuilder(positionDepart, finalPos);
+                    return;
+                }
                 manouryHistoryBuilder(positionDepart, positionArrivee);
                 damier.ajouterPion(positionArrivee, pion);
                 damier.retirerPion(positionDepart);
@@ -219,7 +229,6 @@ public class SingletonJeuDeDames {
             if (!estTourBlanc) {
                 sb.append(")").insert(0, "(");
             }
-
             historiqueDeplacementDamier.add(sb.toString());
             damier.ajouterPion(positionArrivee, pion);
             damier.retirerPion(enemyPosition);
@@ -392,11 +401,14 @@ public class SingletonJeuDeDames {
         Pion targetPion = damier.getListPion().get(nouvellePosition);
         if (targetPion == null) {
             addPossibleMovements(nouvellePosition, decalage, mouvements);
-        } else if (targetPion.getCouleurPion() != currentPion.getCouleurPion()) {
-            int positionFinal = getFinalPositionPrise(position, nouvellePosition);
-            if (damier.getPion(positionFinal) != null) {
-                handleCaptureMouvementPossible(nouvellePosition, position, mouvements);
-                estTourBlanc = !estTourBlanc;
+        } else {
+            assert currentPion != null;
+            if (targetPion.getCouleurPion() != currentPion.getCouleurPion()) {
+                int positionFinal = getFinalPositionPrise(position, nouvellePosition);
+                if (damier.getPion(positionFinal) != null) {
+                    handleCaptureMouvementPossible(position, nouvellePosition, mouvements);
+                    estTourBlanc = !estTourBlanc;
+                }
             }
         }
     }
@@ -445,6 +457,12 @@ public class SingletonJeuDeDames {
         }
     }
 
+    /**
+     * Cette methode verifie si le pion est une dame ou un pion.
+     *
+     * @param position position à vérifier.
+     * @return boolean True si est un pion, false pour une dames
+     */
     private boolean estPionOuDame(int position) {
         char i = damier.getListPion().get(position).getRepresentation();
         return switch (i) {
@@ -463,7 +481,13 @@ public class SingletonJeuDeDames {
      */
     private void handleCaptureMouvementPossible(int position, int nouvellePosition, List<Integer> mouvements) {
         int index = getFinalPositionPrise(position, nouvellePosition);
-        prisePion(position, nouvellePosition, nouvellePosition + index);
+        Pion pion = damier.getPion(position);
+        Pion pionNouvellePosition = damier.getPion(nouvellePosition);
+        if (damier.getPion(position).getCouleurPion() == Pion.Couleur.Blanc) {
+            prisePion(nouvellePosition, position, nouvellePosition - index);
+        } else {
+            prisePion(nouvellePosition, position, nouvellePosition + index);
+        }
         mouvements.add(nouvellePosition + index);
     }
 
@@ -512,10 +536,21 @@ public class SingletonJeuDeDames {
         return true;
     }
 
+    /**
+     * Vérifie s'il y a des mouvements possible pour la position
+     *
+     * @param position position a verifier.
+     * @return boolean True si mouvement restants, false si aucun mouvement.
+     */
     private boolean estMouvementRestant(int position) {
         return mouvementsPossibles(position).isEmpty();
     }
 
+    /**
+     * Compteur de pion blanc et noir pour la fonction partieTerminee.
+     *
+     * @return Array des pions.
+     */
     private int[] compteurPionBlancNoir() {
         int cptBlanc = 0;
         int cptNoir = 0;
@@ -731,6 +766,9 @@ public class SingletonJeuDeDames {
         }
     }
 
+    /**
+     * Cette fonction appelle la fonction vider du damier pour retirer tous les pions du damier.
+     */
     public void vider() {
         damier.vider();
     }

@@ -47,6 +47,18 @@ public class TestSingletonJeuDeDames extends TestCase {
     }
 
     /**
+     * Verifie la prise d'un pion noir sur un blanc.
+     */
+    @Test
+    public void testPriseParPionNoir(){
+        jeu.bouger(34,30);
+        jeu.bouger(20,25);
+        jeu.bouger(31,26);
+        jeu.prisePion(25,30,34);
+        assertNotNull(jeu.getDamier().getPion(34));
+        System.out.println(AffichageDamier.getAffichage(jeu.getDamier()));
+    }
+    /**
      * On vérifie si on peut ajouter un pion en commencant par le jeu de dames et remontant
      * jusqu'au damier.
      */

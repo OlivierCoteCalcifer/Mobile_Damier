@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.IllegalFormatException;
 import java.util.List;
 
+import cstjean.mobile.damier.classe.AffichageDamier;
 import cstjean.mobile.damier.classe.Damier;
 import cstjean.mobile.damier.classe.Pion;
 import cstjean.mobile.damier.classe.SingletonJeuDeDames;
@@ -180,6 +181,7 @@ public class DamierFragment extends Fragment {
         List<Integer> mvtPossible = new ArrayList<>();
         if (pionEnable && index != indexBase) {
             if (mvtPossiblePionBase != null && mvtPossiblePionBase.contains(index)) {
+
                 handleMouvementJoueur(index, mvtPossiblePionBase);
                 return;
             }
@@ -219,7 +221,6 @@ public class DamierFragment extends Fragment {
             jeuDeDames.bouger(indexBase, index);
             mvtPossiblePionBase.clear();
             mvtPossible.clear();
-            Toast.makeText(getContext(), "Tour joueur", Toast.LENGTH_SHORT).show();
             pionEnable = false;
             indexBase = null;
             resetUI();
