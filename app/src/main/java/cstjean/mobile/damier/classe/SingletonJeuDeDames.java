@@ -221,7 +221,6 @@ public class SingletonJeuDeDames {
             }
 
             historiqueDeplacementDamier.add(sb.toString());
-
             damier.ajouterPion(positionArrivee, pion);
             damier.retirerPion(enemyPosition);
             damier.retirerPion(positionDepart);
@@ -394,8 +393,11 @@ public class SingletonJeuDeDames {
         if (targetPion == null) {
             addPossibleMovements(nouvellePosition, decalage, mouvements);
         } else if (targetPion.getCouleurPion() != currentPion.getCouleurPion()) {
-            // handleCaptureMouvementPossible(position, nouvellePosition, mouvements);
-            estTourBlanc = !estTourBlanc;
+            int positionFinal = getFinalPositionPrise(position, nouvellePosition);
+            if (damier.getPion(positionFinal) != null) {
+                handleCaptureMouvementPossible(nouvellePosition, position, mouvements);
+                estTourBlanc = !estTourBlanc;
+            }
         }
     }
 
@@ -462,7 +464,7 @@ public class SingletonJeuDeDames {
     private void handleCaptureMouvementPossible(int position, int nouvellePosition, List<Integer> mouvements) {
         int index = getFinalPositionPrise(position, nouvellePosition);
         prisePion(position, nouvellePosition, nouvellePosition + index);
-        mouvements.add(nouvellePosition);
+        mouvements.add(nouvellePosition + index);
     }
 
     /**
@@ -631,10 +633,10 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionStartBlanc() {
             return new Direction[]{
-                BAS_DROIT_START_BLANC,
-                BAS_GAUCHE_START_BLANC,
-                HAUT_GAUCHE_START_BLANC,
-                HAUT_DROIT_START_BLANC
+                    BAS_DROIT_START_BLANC,
+                    BAS_GAUCHE_START_BLANC,
+                    HAUT_GAUCHE_START_BLANC,
+                    HAUT_DROIT_START_BLANC
             };
         }
 
@@ -646,10 +648,10 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionStartNoir() {
             return new Direction[]{
-                BAS_DROIT_START_NOIR,
-                BAS_GAUCHE_START_NOIR,
-                HAUT_GAUCHE_START_NOIR,
-                HAUT_DROIT_START_NOIR
+                    BAS_DROIT_START_NOIR,
+                    BAS_GAUCHE_START_NOIR,
+                    HAUT_GAUCHE_START_NOIR,
+                    HAUT_DROIT_START_NOIR
             };
         }
 
@@ -661,8 +663,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionBasStartBlanc() {
             return new Direction[]{
-                BAS_DROIT_START_BLANC,
-                BAS_GAUCHE_START_BLANC,
+                    BAS_DROIT_START_BLANC,
+                    BAS_GAUCHE_START_BLANC,
             };
         }
 
@@ -674,8 +676,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionBasStartNoir() {
             return new Direction[]{
-                BAS_DROIT_START_NOIR,
-                BAS_GAUCHE_START_NOIR,
+                    BAS_DROIT_START_NOIR,
+                    BAS_GAUCHE_START_NOIR,
             };
         }
 
@@ -687,8 +689,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionHautStartBlanc() {
             return new Direction[]{
-                HAUT_GAUCHE_START_BLANC,
-                HAUT_DROIT_START_BLANC
+                    HAUT_GAUCHE_START_BLANC,
+                    HAUT_DROIT_START_BLANC
             };
         }
 
@@ -700,8 +702,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionHautStartNoir() {
             return new Direction[]{
-                HAUT_GAUCHE_START_NOIR,
-                HAUT_DROIT_START_NOIR
+                    HAUT_GAUCHE_START_NOIR,
+                    HAUT_DROIT_START_NOIR
             };
         }
 
@@ -729,7 +731,7 @@ public class SingletonJeuDeDames {
         }
     }
 
-    public void vider(){
+    public void vider() {
         damier.vider();
     }
 }

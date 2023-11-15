@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.IllegalFormatException;
 import java.util.List;
 
+import cstjean.mobile.damier.classe.Damier;
 import cstjean.mobile.damier.classe.Pion;
 import cstjean.mobile.damier.classe.SingletonJeuDeDames;
 
@@ -35,12 +36,29 @@ public class DamierFragment extends Fragment {
      * Input du deuxième joueur du menu.
      */
     private String nomJoueur2;
+    /**
+     * Boolean pour lorsqu'un bouton est appuyé.
+     */
     private boolean pionEnable = false;
+    /**
+     * Instance du Jeu de dames.
+     */
     private SingletonJeuDeDames jeuDeDames = SingletonJeuDeDames.getInstance();
+    /**
+     * Lorsqu'on appuie sur un bouton on prend l'index pour le mettre en memoire pour faciliter
+     * l'appel de prisePion.
+     */
     private Integer indexBase;
+    /**
+     * Lorsqu'on appuie sur un bouton on mets en memoire les mouvements possible que lorsqu'on
+     * appuie sur la destination on ne perd pas la liste de l'indexBase.
+     */
     private List<Integer> mvtPossiblePionBase = new ArrayList<>();
+    /**
+     * TextView pour le message des tours des joueurs.
+     */
     private TextView message_Board;
-
+    private Damier damier;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +72,11 @@ public class DamierFragment extends Fragment {
         if (args != null) {
             nomJoueur1 = args.getString("Joueur1");
             nomJoueur2 = args.getString("Joueur2");
+        } else {
+            nomJoueur1 = "Joueur1";
+            nomJoueur2 = "Joueur2";
         }
+
         setupBoard(view);
         setupBoardWithImageChecker(view);
         return view;
@@ -81,11 +103,10 @@ public class DamierFragment extends Fragment {
         GridLayout damierBoard = view.findViewById(R.id.board_damier);
         damierBoard.setColumnCount(10);
         damierBoard.setRowCount(10);
+
         DisplayMetrics displayMetrics = view.getContext().getResources().getDisplayMetrics();
         int screenWidth = displayMetrics.widthPixels;
-        int buttonSize = screenWidth / 10; // Divide screen width by number of columns
-
-
+        int buttonSize = screenWidth / 10;
         int numeroManoury = 1;
         for (int i = 0; i < 100; i++) {
             ImageButton button = new ImageButton(view.getContext());
@@ -122,6 +143,7 @@ public class DamierFragment extends Fragment {
     }
 
     private void onClickRetourMouvement() {
+        damier = jeuDeDames.getDamier();
         Toast.makeText(getContext(), "Retour", Toast.LENGTH_SHORT).show();
     }
 
@@ -129,7 +151,8 @@ public class DamierFragment extends Fragment {
         jeuDeDames.reset();
         for (int i = 1; i <= 50; i++) {
             String id = String.valueOf(i);
-            int resId = view.getResources().getIdentifier(id, "id", view.getContext().getPackageName());
+            int resId = view.getResources().getIdentifier(id, "id",
+                    view.getContext().getPackageName());
             ImageButton button = view.findViewById(resId);
 
             button.setBackgroundColor(view.getContext().getColor(R.color.boardBlackCase));
@@ -149,16 +172,22 @@ public class DamierFragment extends Fragment {
     }
 
     /**
-     * Cette methode va appeler les methodes nécessaire pour le fonctionnnement du jeu.
+     * Cette methode va appeler les méthodes nécessaire pour le fonctionnnement du jeu.
      */
     private void onClickButton(int index) {
+        resetUI();
+
         List<Integer> mvtPossible = new ArrayList<>();
         if (pionEnable && index != indexBase) {
-            if (mvtPossiblePionBase.contains(index)) {
+            if (mvtPossiblePionBase != null && mvtPossiblePionBase.contains(index)) {
                 handleMouvementJoueur(index, mvtPossiblePionBase);
+                return;
             }
         }
         mvtPossible = jeuDeDames.mouvementsPossibles(index);
+        if (mvtPossible == null) {
+            mvtPossible = new ArrayList<>();
+        }
         char rep = verificationPionNull(index);
         resetUI();
         switch (rep) {
@@ -185,10 +214,12 @@ public class DamierFragment extends Fragment {
             pionEnable = true;
             ajoutUIOnClick(index, mvtPossible);
             indexBase = index;
-            mvtPossiblePionBase = mvtPossible;
+            mvtPossiblePionBase = new ArrayList<>(mvtPossible);
         } else if (pionEnable && mvtPossiblePionBase.contains(index)) {
             jeuDeDames.bouger(indexBase, index);
             mvtPossiblePionBase.clear();
+            mvtPossible.clear();
+            Toast.makeText(getContext(), "Tour joueur", Toast.LENGTH_SHORT).show();
             pionEnable = false;
             indexBase = null;
             resetUI();
@@ -198,9 +229,6 @@ public class DamierFragment extends Fragment {
             mvtPossiblePionBase.clear();
         }
     }
-
-
-
 
     /**
      * Ajoute des marqueurs visuels sur le pion sélectionné et les mouvements possible.
@@ -260,6 +288,7 @@ public class DamierFragment extends Fragment {
             }
         }
     }
+
     private void updateTextView() {
         String msg;
         if (jeuDeDames.getEstTourBlanc()) {
@@ -269,6 +298,7 @@ public class DamierFragment extends Fragment {
         }
         message_Board.setText(msg);
     }
+
     private char verificationPionNull(int index) {
         try {
             Pion pion = jeuDeDames.getDamier().getPion(index);

@@ -1,11 +1,13 @@
 package cstjean.mobile.damier;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
  * Cette classe regroupe tout les tests dans un morceau.
  */
-public class TestComplet {
+public class TestComplet extends TestCase {
     /**
      * Cette fonction regroupe les tests et retourne la suite de tests.
      *
