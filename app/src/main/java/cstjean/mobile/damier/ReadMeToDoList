@@ -37,18 +37,16 @@ Olivier : XXXXXXXX --> Creation des vues et fragments. Design des fragments et b
           XXXXXXXX --> Verifier que l'activity du menu fonctionne et transitionne vers le jeu (Terminé le 12 novembre)
           XXXXXXXX --> Ajouter les images des pièces dans le drawable. (Terminé le 12 novembre)
           XXXXXXXX --> Corriger la boucle pour la génération du board. (Terminé le 12 novembre)
-          --> Faire la loop pour le savedOnInstance et onCreateView pour la transition d'orientation
-              d'appareil.
+          --> Faire la loop pour le savedOnInstance et onCreateView pour la transition d'orientation d'appareil.
           --> Faire le onClickListener avec toutes les fonctions du damier.
           --> Mouvements fonctionnels
 
 
 
 Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10 novembre)
-         ( Deadline: 14 novembre)
          XXXXXXXX --> Images plus claire pour le pion Blanc (Terminé le 13 novembre)
-         XXXXXXXX --> Réparer les tests pour que chaque test fonctionne et initialiser l'instance pour le
-            scénario du test. (Terminé le 13 novembre)
+         XXXXXXXX --> Réparer les tests pour que chaque test fonctionne et initialiser l'instance pour le scénario du test. (Terminé le 13 novembre)
+         XXXXXXXX --> Couper la fonction retourPartie afin de faciliter la compréhension du code (Terminé le 15 novembre)
          --> Mettre des commentaires dans les fonctions pour simplifier la compréhension d'un autre programmeur.
 
 Both:

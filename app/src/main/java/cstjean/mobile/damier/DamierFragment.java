@@ -2,6 +2,7 @@ package cstjean.mobile.damier;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,11 +219,16 @@ public class DamierFragment extends Fragment {
             indexBase = index;
             mvtPossiblePionBase = new ArrayList<>(mvtPossible);
         } else if (pionEnable && mvtPossiblePionBase.contains(index)) {
+
+            Log.d("DamierFragment", "Index de départ: " + indexBase);
+            Log.d("DamierFragment", "Index d'arrivée: " + index);
             jeuDeDames.bouger(indexBase, index);
             mvtPossiblePionBase.clear();
             mvtPossible.clear();
             pionEnable = false;
             indexBase = null;
+            Log.d("DamierFragment", "Index de départ: " + indexBase);
+            Log.d("DamierFragment", "Index d'arrivée: " + index);
             resetUI();
         } else {
             indexBase = null;

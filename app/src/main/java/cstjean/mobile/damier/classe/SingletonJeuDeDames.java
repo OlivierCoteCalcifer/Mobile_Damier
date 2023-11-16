@@ -87,29 +87,33 @@ public class SingletonJeuDeDames {
      */
     public void bouger(int positionDepart, int positionArrivee) {
         Pion pion = damier.getListPion().get(positionDepart);
+        char representationPion = pion.getRepresentation();
+        Pion.Couleur couleurPion = pion.getCouleurPion();
 
         if (pion == null) {
             throw new IllegalArgumentException("Mouvement impossible, aucun pion.");
         }
 
+        // Vérifie si le mouvement est une diagonale.
         boolean estDiagonale = Math.abs(positionArrivee - positionDepart) % 6 == 0 ||
                 Math.abs(positionArrivee - positionDepart) % 5 == 0 ||
                 Math.abs(positionArrivee - positionDepart) % 4 == 0;
-        boolean estMouvementAdmissible =
-                (pion.getCouleurPion() == Pion.Couleur.Noir && !estTourBlanc && positionDepart < positionArrivee) ||
-                        (pion.getCouleurPion() == Pion.Couleur.Blanc && estTourBlanc &&
-                                positionDepart > positionArrivee) ||
-                        (pion.getRepresentation() == 'D' && !estTourBlanc) ||
-                        (pion.getRepresentation() == 'd' && estTourBlanc);
-        char representation = pion.getRepresentation();
 
-        if (representation == 'P' || representation == 'p') {
+        // Vérifie si la couleur du pion correspond avec le tour des joueurs.
+        boolean estMouvementAdmissible =
+                (couleurPion == Pion.Couleur.Noir && !estTourBlanc && positionDepart < positionArrivee) ||
+                        (couleurPion == Pion.Couleur.Blanc && estTourBlanc &&
+                                positionDepart > positionArrivee) ||
+                        (representationPion == 'D' && !estTourBlanc) ||
+                        (representationPion == 'd' && estTourBlanc);
+
+        if (representationPion == 'P' || representationPion == 'p') {
             if (estMouvementAdmissible) {
                 gererMouvementPion(positionDepart, positionArrivee, pion, estDiagonale);
             } else {
                 throw new IllegalArgumentException("Mouvement impossible");
             }
-        } else if (representation == 'D' || representation == 'd') {
+        } else if (representationPion == 'D' || representationPion == 'd') {
             gererMouvementDame(positionDepart, positionArrivee, estDiagonale, pion);
         }
     }
@@ -124,6 +128,8 @@ public class SingletonJeuDeDames {
      */
     private void gererMouvementPion(int positionDepart, int positionArrivee, Pion pion, boolean estDiagonale) {
         int index = Math.abs(positionArrivee - positionDepart);
+
+        // Vérifie si le mouvement est valide.
         if (estDiagonale && index <= 6) {
             if (damier.getListPion().get(positionArrivee) == null) {
                 if (estTourBlanc && positionArrivee >= 1 && positionArrivee <= 5) {
@@ -283,10 +289,12 @@ public class SingletonJeuDeDames {
         int positionArrivee = -1;
         int positionDepart = -1;
 
+        // Regex qui sépare les nombres
         String regex = "(\\d+)([-x])(\\d+)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(dernierMouvement);
 
+        // Fonction qui identifie si c'est une prise ou un mouvement
         if (matcher.find()) {
             positionDepart = Integer.parseInt(matcher.group(1));
             String separator = matcher.group(2);
@@ -294,51 +302,83 @@ public class SingletonJeuDeDames {
             if (separator.equals("x")) {
                 estPrise = true;
             }
-
             positionArrivee = Integer.parseInt(matcher.group(3));
         }
 
+        // Determiner si le tour était au blanc ou noir et rétablie l'ancien tour
+        determinerTour(dernierMouvement);
+
+        Pion pion = new Pion();
+        if (!estPrise) {
+            retourMouvement(pion, positionArrivee, positionDepart);
+        } else {
+            retourPrise(pion, index, positionArrivee, positionDepart);
+        }
+        historiqueDeplacementDamier.remove(index);
+    }
+
+    /**
+     * Fait le retour en arrière d'un mouvement.
+     *
+     * @param pion Prend en paramètre le pion bougé.
+     * @param positionArrivee Prend en paramètre la posision d'arrivée.
+     * @param positionDepart Prend en paramètre la position de départ.
+     */
+    private void retourMouvement(Pion pion, int positionArrivee, int positionDepart) {
+        if (estTourBlanc) {
+            pion = new Pion(Pion.Couleur.Blanc);
+        } else {
+            pion = new Pion(Pion.Couleur.Noir);
+        }
+
+        damier.ajouterPion(positionDepart, pion);
+        damier.retirerPion(positionArrivee);
+    }
+
+    /**
+     * Fait le retour en arrière d'une prise.
+     *
+     * @param pion Prend en paramètre le pion bougé.
+     * @param index Prend en paramètre l'index du pion pris.
+     * @param positionArrivee Prend en paramètre la posision d'arrivée.
+     * @param positionDepart Prend en paramètre la position de départ.
+     */
+    private void retourPrise(Pion pion, int index, int positionArrivee, int positionDepart) {
+        Object[] objectArray = listePionsPris.get(0);
+
+        // Vérifie si la liste de prise n'est pas vide.
+        if (objectArray != null && objectArray.length > 0) {
+            Object firstElement = objectArray[0];
+
+            if (firstElement instanceof Pion) {
+                pion = (Pion) firstElement;
+            }
+        }
+
+        int indexEnemy = listePionsPris.size() - 1;
+
+        Pion pionEnemy = (Pion) listePionsPris.get(indexEnemy)[0];
+        int positionEnemy = (int) listePionsPris.get(indexEnemy)[1];
+
+        damier.ajouterPion(positionDepart, pion);
+        damier.ajouterPion(positionEnemy, pionEnemy);
+        damier.retirerPion(positionArrivee);
+
+        listePionsPris.remove(index);
+    }
+
+    /**
+     * Fontionne qui attribue le bon tour lors d'un retour en arrière.
+     *
+     * @param dernierMouvement Prend un paramètre un string du dernier mouvement en manoury.
+     */
+    private void determinerTour(String dernierMouvement) {
         if (dernierMouvement.contains("(")) {
             dernierMouvement = dernierMouvement.replace("(", "").replace(")", "");
             estTourBlanc = false;
         } else {
             estTourBlanc = true;
         }
-
-        Pion pion = null;
-        if (!estPrise) {
-
-            if (estTourBlanc) {
-                pion = new Pion(Pion.Couleur.Blanc);
-            } else {
-                pion = new Pion(Pion.Couleur.Noir);
-            }
-
-            damier.ajouterPion(positionDepart, pion);
-            damier.retirerPion(positionArrivee);
-        } else {
-            Object[] objectArray = listePionsPris.get(0);
-
-            if (objectArray != null && objectArray.length > 0) {
-                Object firstElement = objectArray[0];
-
-                if (firstElement instanceof Pion) {
-                    pion = (Pion) firstElement;
-                }
-            }
-
-            int indexEnemy = listePionsPris.size() - 1;
-
-            Pion pionEnemy = (Pion) listePionsPris.get(indexEnemy)[0];
-            int positionEnemy = (int) listePionsPris.get(indexEnemy)[1];
-
-            damier.ajouterPion(positionDepart, pion);
-            damier.ajouterPion(positionEnemy, pionEnemy);
-            damier.retirerPion(positionArrivee);
-
-            listePionsPris.remove(index);
-        }
-        historiqueDeplacementDamier.remove(index);
     }
 
     /**
@@ -481,6 +521,10 @@ public class SingletonJeuDeDames {
      */
     private void handleCaptureMouvementPossible(int position, int nouvellePosition, List<Integer> mouvements) {
         int index = getFinalPositionPrise(position, nouvellePosition);
+
+        prisePion(position, nouvellePosition, nouvellePosition + index);
+        mouvements.add(nouvellePosition);
+        /*
         Pion pion = damier.getPion(position);
         Pion pionNouvellePosition = damier.getPion(nouvellePosition);
         if (damier.getPion(position).getCouleurPion() == Pion.Couleur.Blanc) {
@@ -489,6 +533,8 @@ public class SingletonJeuDeDames {
             prisePion(nouvellePosition, position, nouvellePosition + index);
         }
         mouvements.add(nouvellePosition + index);
+
+         */
     }
 
     /**
