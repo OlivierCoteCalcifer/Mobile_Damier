@@ -127,10 +127,9 @@ public class SingletonJeuDeDames {
      * @param estDiagonale    si le mouvement est en Diagonale.
      */
     private void gererMouvementPion(int positionDepart, int positionArrivee, Pion pion, boolean estDiagonale) {
-        int index = Math.abs(positionArrivee - positionDepart);
 
         // Vérifie si le mouvement est valide.
-        if (estDiagonale && index <= 6) {
+        if (estDiagonale) {
             if (damier.getListPion().get(positionArrivee) == null) {
                 if (estTourBlanc && positionArrivee >= 1 && positionArrivee <= 5) {
                     pion = new Dames(Pion.Couleur.Blanc);
@@ -239,6 +238,7 @@ public class SingletonJeuDeDames {
             damier.ajouterPion(positionArrivee, pion);
             damier.retirerPion(enemyPosition);
             damier.retirerPion(positionDepart);
+            estTourBlanc = !estTourBlanc;
         } else {
             throw new IllegalArgumentException("Prise impossible.");
         }
@@ -445,8 +445,9 @@ public class SingletonJeuDeDames {
             assert currentPion != null;
             if (targetPion.getCouleurPion() != currentPion.getCouleurPion()) {
                 int positionFinal = getFinalPositionPrise(position, nouvellePosition);
-                if (damier.getPion(positionFinal) != null) {
-                    handleCaptureMouvementPossible(position, nouvellePosition, mouvements);
+                if (damier.getPion(nouvellePosition + positionFinal) == null) {
+                    //handleCaptureMouvementPossible(position, nouvellePosition, mouvements);
+                    prisePion(position,nouvellePosition,nouvellePosition + positionFinal);
                     estTourBlanc = !estTourBlanc;
                 }
             }

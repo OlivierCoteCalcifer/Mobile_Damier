@@ -182,7 +182,6 @@ public class DamierFragment extends Fragment {
         List<Integer> mvtPossible = new ArrayList<>();
         if (pionEnable && index != indexBase) {
             if (mvtPossiblePionBase != null && mvtPossiblePionBase.contains(index)) {
-
                 handleMouvementJoueur(index, mvtPossiblePionBase);
                 return;
             }
