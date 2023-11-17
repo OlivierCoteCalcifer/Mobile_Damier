@@ -554,7 +554,6 @@ public class SingletonJeuDeDames {
                 if (damier.getPion(nouvellePosition) != null) {
                     int posFinal = alternance ? nouvellePosition + directionMove : nouvellePosition + (directionStart.contains("START_NOIR") ? directionMove + 1 : directionMove - 1);
                     priseDame(positionInitiale, nouvellePosition, posFinal, damier.getPion(positionInitiale));
-                    alternance = !alternance;
                 }
             } else {
                 break;
@@ -566,7 +565,6 @@ public class SingletonJeuDeDames {
             mouvements.add(nouvellePosition);
         }
     }
-
 
 
     /**

@@ -151,7 +151,7 @@ public class DamierFragment extends Fragment {
         jeuDeDames.getDamier().ajouterDames(9,new Pion(Pion.Couleur.Blanc),10);
         jeuDeDames.getDamier().ajouterPion(25,new Pion(Pion.Couleur.Noir));
         resetUI();
-        Toast.makeText(getContext(), "Clear", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Board Test Dame", Toast.LENGTH_SHORT).show();
     }
 
     private void setupBoardWithImageChecker(View view) {
