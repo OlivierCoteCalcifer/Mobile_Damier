@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Cette classe est le jeu de dames qui calcule les mouvements possibles.
@@ -143,7 +144,7 @@ public class SingletonJeuDeDames {
                 Pion pionArrivee = damier.getPion(positionArrivee);
                 if (pionFinish == null && pionArrivee != null &&
                         pionArrivee.getCouleurPion() != pion.getCouleurPion()) {
-                    List<Integer> mvt = mouvementsPossibles(positionDepart, false);
+                    List<Integer> mvt = mouvementsPossibles(positionDepart, false).stream().distinct().toList();
                     handleCaptureMouvementPossible(positionDepart, positionArrivee, mvt);
                     manouryHistoryBuilder(positionDepart, finalPos);
                     return;
@@ -206,6 +207,7 @@ public class SingletonJeuDeDames {
         damier.retirerPion(positionDepart);
         damier.retirerPion(positionEnnemi);
         damier.ajouterPion(positionFinal, pion);
+        estTourBlanc = !estTourBlanc;
     }
 
     /**
@@ -269,7 +271,7 @@ public class SingletonJeuDeDames {
                     }
                 }
                 case Noir -> {
-                    if (positionArrivee >= 45) {
+                    if (positionArrivee > 45) {
                         damier.ajouterDames(positionArrivee, pion, positionDepart);
                         damier.retirerPion(enemyPosition);
                         estTourBlanc = !estTourBlanc;
@@ -517,25 +519,47 @@ public class SingletonJeuDeDames {
         if (pionInitiale != null && !estPionOuDame(positionInitiale)) {
             mouvements.add(nouvellePosition);
             // Utilise gestionAlternanceDame pour la logique de déplacement de la dame
-            gestionAlternanceDame(nouvellePosition, directionIndex, mouvements, alternance);
+            gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance);
         }
 
         if (pionInitiale != null && estPionOuDame(positionInitiale)) {
-            mouvements.add(nouvellePosition);
+            Pion pion = damier.getPion(positionInitiale);
+            if (!checkBoardPion(positionInitiale, pion, mouvements)) {
+                gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance);
+            }
         }
+        List<Integer> uniqueMouvements = mouvements.stream()
+                .distinct()
+                .collect(Collectors.toList());
+        mouvements = new ArrayList<>(uniqueMouvements);
+
     }
 
-
-    private void gestionAlternanceDame(int nouvellePosition, Direction directionIndex,
-                                       List<Integer> mouvements, boolean alternance) {
+    /**
+     * Cette methode fait l'alternance pour ajouter aux mouvements possible.
+     * Si le pion est une dame il entre dans une boucle pour placer chaque mouvement possible
+     * sinon on retourne la position dans la liste.
+     *
+     * @param nouvellePosition Nouvelle position à vérifier
+     * @param directionIndex   Enum de direction à faire l'alternance
+     * @param mouvements       Liste de mouvements du pionInitiale
+     * @param alternance       Boolean pour faire l'alternance + 1 ou -1.
+     */
+    private void gestionAlternance(int nouvellePosition, Direction directionIndex,
+                                   List<Integer> mouvements, boolean alternance) {
         int positionInitiale = nouvellePosition - directionIndex.getValue();
         Pion pionInitiale = damier.getPion(positionInitiale);
         String directionStart = directionIndex.toString();
         int directionMove = directionIndex.getValue();
 
+        // Add final position if initial piece is a pawn or a dame
+        if (pionInitiale != null && estPionOuDame(positionInitiale)) {
+            mouvements.add(nouvellePosition);
+            return;
+        }
         // Loop for handling the dame's diagonal movement
         while (estPositionValide(nouvellePosition)) {
-            Pion pionPossibleNouvellePosition = damier.getListPion().get(nouvellePosition);
+            Pion pionPossibleNouvellePosition = damier.getPion(nouvellePosition);
             if (borderBoard.contains(nouvellePosition)) {
                 break;
             }
@@ -546,6 +570,9 @@ public class SingletonJeuDeDames {
                     nouvellePosition += alternance ? directionMove : directionMove - 1;
                 }
                 if (borderBoard.contains(nouvellePosition)) {
+                    if (damier.getPion(nouvellePosition) == null) {
+                        mouvements.add(nouvellePosition);
+                    }
                     break;
                 }
                 alternance = !alternance;
@@ -560,9 +587,92 @@ public class SingletonJeuDeDames {
             }
         }
 
-        // Add final position if initial piece is a pawn or a dame
-        if (pionInitiale != null && estPionOuDame(positionInitiale)) {
-            mouvements.add(nouvellePosition);
+    }
+
+    private boolean checkBoardPion(int initialPosition, Pion pion, List<Integer> moves) {
+        if (pion == null) {
+            return false;
+        }
+        boolean estPionBlanc = pion.getCouleurPion() ==
+                Pion.Couleur.Blanc && pion.getRepresentation() == 'p';
+        boolean estPionNoir = pion.getCouleurPion() ==
+                Pion.Couleur.Noir && pion.getRepresentation() == 'P';
+
+        if (borderBoard.contains(initialPosition)) {
+            if (estPionBlanc) {
+                return handlePionBlancMovesBorder(initialPosition, moves);
+            } else if (estPionNoir) {
+                return handlePionNoirMovesBorder(initialPosition, moves);
+            }
+        }
+        return false;
+    }
+
+    private boolean handlePionBlancMovesBorder(int position, List<Integer> moves) {
+        switch (position) {
+            case 6:
+                moves.add(1);
+                return true;
+            case 16:
+                moves.add(11);
+                return true;
+            case 26:
+                moves.add(21);
+                return true;
+            case 36:
+                moves.add(31);
+                return true;
+            case 46:
+                moves.add(41);
+                return true;
+            case 15:
+                moves.add(10);
+                return true;
+            case 25:
+                moves.add(20);
+                return true;
+            case 35:
+                moves.add(30);
+                return true;
+            case 45:
+                moves.add(40);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private boolean handlePionNoirMovesBorder(int position, List<Integer> moves) {
+        switch (position) {
+            case 6:
+                moves.add(11);
+                return true;
+            case 16:
+                moves.add(21);
+                return true;
+            case 26:
+                moves.add(31);
+                return true;
+            case 36:
+                moves.add(41);
+                return true;
+            case 5:
+                moves.add(10);
+                return true;
+            case 15:
+                moves.add(20);
+                return true;
+            case 25:
+                moves.add(30);
+                return true;
+            case 35:
+                moves.add(40);
+                return true;
+            case 45:
+                moves.add(50);
+                return true;
+            default:
+                return false;
         }
     }
 
