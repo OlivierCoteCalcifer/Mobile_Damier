@@ -146,8 +146,12 @@ public class DamierFragment extends Fragment {
     }
 
     private void onClickRetourMouvement() {
-        damier = jeuDeDames.getDamier();
-        Toast.makeText(getContext(), "Retour", Toast.LENGTH_SHORT).show();
+        // C'est juste pour cette setup le board pour mes tests avec les prises et tout. Feel free to change it.
+        jeuDeDames.vider();
+        jeuDeDames.getDamier().ajouterDames(9,new Pion(Pion.Couleur.Blanc),10);
+        jeuDeDames.getDamier().ajouterPion(25,new Pion(Pion.Couleur.Noir));
+        resetUI();
+        Toast.makeText(getContext(), "Clear", Toast.LENGTH_SHORT).show();
     }
 
     private void setupBoardWithImageChecker(View view) {
@@ -291,7 +295,13 @@ public class DamierFragment extends Fragment {
                 }
             }
         }
-        Log.d("DamierFragment", AffichageDamier.getAffichage(jeuDeDames.getDamier()) + "\n\n");
+        Log.d("DamierFragment","" +
+                "");
+        Log.d("DamierFragment","" +
+                "");
+        Log.d("DamierFragment","" +
+                "");
+        Log.d("DamierFragment", AffichageDamier.getAffichage(jeuDeDames.getDamier()));
     }
 
     private void updateTextView() {

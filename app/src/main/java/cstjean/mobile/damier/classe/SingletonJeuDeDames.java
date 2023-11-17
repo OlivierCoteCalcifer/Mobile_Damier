@@ -114,7 +114,7 @@ public class SingletonJeuDeDames {
                 throw new IllegalArgumentException("Mouvement impossible");
             }
         } else if (representationPion == 'D' || representationPion == 'd') {
-            gererMouvementDame(positionDepart, positionArrivee, estDiagonale, pion);
+            gererMouvementDame(positionDepart, positionArrivee, pion);
         }
     }
 
@@ -165,25 +165,26 @@ public class SingletonJeuDeDames {
      *
      * @param positionDepart  Position depart de la dame.
      * @param positionArrivee Position arrive de la dame.
-     * @param estDiagonale    boolean pour confirmer que le mouvement est diagonale.
      * @param pion            la Dame.
      */
     private void gererMouvementDame(int positionDepart, int positionArrivee,
-                                    boolean estDiagonale, Pion pion) {
+                                    Pion pion) {
+        List<Integer> mvtDepart = mouvementsPossibles(positionDepart, true);
         Pion pionEnnemi = damier.getPion(positionArrivee);
-        if (estMouvementRestant(positionDepart, true) || estDiagonale) {
+        if (mvtDepart.contains(positionArrivee)) {
             if (pionEnnemi == null) {
-
                 manouryHistoryBuilder(positionDepart, positionArrivee);
                 damier.ajouterPion(positionArrivee, pion);
                 damier.retirerPion(positionDepart);
                 estTourBlanc = !estTourBlanc;
+                return;
             }
             if (pionEnnemi != null && pion.getCouleurPion() != pionEnnemi.getCouleurPion()) {
                 Direction[] directions = getDirection(pion, positionDepart);
                 for (Direction d : directions) {
                     if (positionArrivee % d.value == 0) {
                         priseDame(positionDepart, positionArrivee, positionArrivee + d.value, pion);
+                        return;
                     }
                 }
             } else {
@@ -510,43 +511,63 @@ public class SingletonJeuDeDames {
                                       List<Integer> mouvements) {
         int positionInitiale = nouvellePosition - directionIndex.getValue();
         Pion pionInitiale = damier.getListPion().get(positionInitiale);
-        String directionStart = directionIndex.toString();
-        int directionMove = directionIndex.getValue();
         // Ce boolean est pour une alternance -1 ou + 1 dans le mouvement de diagonale de la dame.
         boolean alternance = false;
 
         if (pionInitiale != null && !estPionOuDame(positionInitiale)) {
             mouvements.add(nouvellePosition);
-            // Si c'est faux, on exécute une loop pour la diagonale de la dame.
-            while (estPositionValide(nouvellePosition)) {
-                Pion pionPossibleNouvellePosition = damier.getListPion().get(nouvellePosition);
-                if (borderBoard.contains(nouvellePosition)) {
-                    break;
-                }
-                if (pionPossibleNouvellePosition == null) {
-                    if (directionStart.contains("START_NOIR")) {
-                        nouvellePosition += alternance ? directionMove : directionMove + 1;
-                        if (damier.getPion(nouvellePosition) != null) {
-                            int posFinal = alternance ? directionMove : directionMove + 1;
-                            priseDame(positionInitiale, nouvellePosition,
-                                    posFinal, damier.getPion(positionInitiale));
-                        }
-                        alternance = !alternance;
-                        mouvements.add(nouvellePosition);
-                    } else {
-                        nouvellePosition += alternance ? directionMove : directionMove - 1;
-                        alternance = !alternance;
-                        mouvements.add(nouvellePosition);
-                    }
-                } else {
-                    break;
-                }
-            }
+            // Utilise gestionAlternanceDame pour la logique de déplacement de la dame
+            gestionAlternanceDame(nouvellePosition, directionIndex, mouvements, alternance);
         }
+
         if (pionInitiale != null && estPionOuDame(positionInitiale)) {
             mouvements.add(nouvellePosition);
         }
     }
+
+
+    private void gestionAlternanceDame(int nouvellePosition, Direction directionIndex,
+                                       List<Integer> mouvements, boolean alternance) {
+        int positionInitiale = nouvellePosition - directionIndex.getValue();
+        Pion pionInitiale = damier.getPion(positionInitiale);
+        String directionStart = directionIndex.toString();
+        int directionMove = directionIndex.getValue();
+
+        // Loop for handling the dame's diagonal movement
+        while (estPositionValide(nouvellePosition)) {
+            Pion pionPossibleNouvellePosition = damier.getListPion().get(nouvellePosition);
+            if (borderBoard.contains(nouvellePosition)) {
+                break;
+            }
+            if (pionPossibleNouvellePosition == null) {
+                if (directionStart.contains("START_NOIR")) {
+                    nouvellePosition += alternance ? directionMove : directionMove + 1;
+                } else {
+                    nouvellePosition += alternance ? directionMove : directionMove - 1;
+                }
+                if (borderBoard.contains(nouvellePosition)) {
+                    break;
+                }
+                alternance = !alternance;
+                mouvements.add(nouvellePosition);
+
+                if (damier.getPion(nouvellePosition) != null) {
+                    int posFinal = alternance ? nouvellePosition + directionMove : nouvellePosition + (directionStart.contains("START_NOIR") ? directionMove + 1 : directionMove - 1);
+                    priseDame(positionInitiale, nouvellePosition, posFinal, damier.getPion(positionInitiale));
+                    alternance = !alternance;
+                }
+            } else {
+                break;
+            }
+        }
+
+        // Add final position if initial piece is a pawn or a dame
+        if (pionInitiale != null && estPionOuDame(positionInitiale)) {
+            mouvements.add(nouvellePosition);
+        }
+    }
+
+
 
     /**
      * Cette methode verifie si le pion est une dame ou un pion.
@@ -555,12 +576,15 @@ public class SingletonJeuDeDames {
      * @return boolean True si est un pion, false pour une dames
      */
     private boolean estPionOuDame(int position) {
-        char i = damier.getListPion().get(position).getRepresentation();
-        return switch (i) {
-            case 'P', 'p' -> true;
-            default -> false;
-        };
-
+        Pion pion = damier.getPion(position);
+        if (pion != null) {
+            char i = damier.getListPion().get(position).getRepresentation();
+            return switch (i) {
+                case 'P', 'p' -> true;
+                default -> false;
+            };
+        }
+        return true;
     }
 
     /**
@@ -850,6 +874,7 @@ public class SingletonJeuDeDames {
         public int getValue() {
             return value;
         }
+
     }
 
     /**
