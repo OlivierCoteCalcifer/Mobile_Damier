@@ -61,6 +61,7 @@ public class DamierFragment extends Fragment {
      */
     private TextView message_Board;
     private Damier damier;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,7 +179,6 @@ public class DamierFragment extends Fragment {
      */
     private void onClickButton(int index) {
         resetUI();
-
         List<Integer> mvtPossible = new ArrayList<>();
         if (pionEnable && index != indexBase) {
             if (mvtPossiblePionBase != null && mvtPossiblePionBase.contains(index)) {
@@ -186,7 +186,7 @@ public class DamierFragment extends Fragment {
                 return;
             }
         }
-        mvtPossible = jeuDeDames.mouvementsPossibles(index);
+        mvtPossible = jeuDeDames.mouvementsPossibles(index, false);
         if (mvtPossible == null) {
             mvtPossible = new ArrayList<>();
         }
@@ -204,12 +204,10 @@ public class DamierFragment extends Fragment {
                 }
             }
             default -> {
-                if (!pionEnable) {
-                    Toast.makeText(getContext(), "Aucun pion sélectionné", Toast.LENGTH_SHORT).show();
-                }
             }
         }
     }
+
 
     private void handleMouvementJoueur(int index, List<Integer> mvtPossible) {
         if (mvtPossiblePionBase.isEmpty()) {
@@ -293,6 +291,7 @@ public class DamierFragment extends Fragment {
                 }
             }
         }
+        Log.d("DamierFragment", AffichageDamier.getAffichage(jeuDeDames.getDamier()) + "\n\n");
     }
 
     private void updateTextView() {
