@@ -11,9 +11,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import com.google.android.material.textfield.TextInputEditText;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -92,18 +95,32 @@ public class MenuFragment extends Fragment {
             compteurBoutonMenu = savedInstanceState.getInt("compteurBoutonMenu", 0);
             nomJoueur1 = savedInstanceState.getString("nomJoueur1", null);
             nomJoueur2 = savedInstanceState.getString("nomJoueur2", null);
+            String nameInput = savedInstanceState.getString("menuInputTextPlayer");
+            menuLayout.removeAllViews();
+            menuLayout.addView(menuText);
+            menuInput.setText(nameInput);
+            menuLayout.addView(menuInput);
+            menuLayout.addView(menuButton);
         }
         return view;
     }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("compteurBoutonMenu", compteurBoutonMenu);
         outState.putString("nomJoueur1", nomJoueur1);
         outState.putString("nomJoueur2", nomJoueur2);
+        if (menuInput != null) {
+            outState.putString("menuInput", menuInput.getText().toString());
+            outState.putString("menuInputTextPlayer", String.valueOf(menuInput.getText()));
+        }
+
     }
+
     private void onButtonClickMenu(LinearLayout menuLayout, Button menuButton, TextView menuText) {
         menuInput.setHint("Entrez votre nom ici");
+
         switch (compteurBoutonMenu) {
             case 0 -> {
                 menuText.setText(R.string.msg_validation_1);
@@ -116,7 +133,7 @@ public class MenuFragment extends Fragment {
             case 1 -> {
                 if (Objects.requireNonNull(menuInput.getText()).toString().isEmpty() &&
                         nomJoueur1 == null) {
-                    toastErreur.setGravity(Gravity.TOP|Gravity.CENTER, 0, -100);
+                    toastErreur.setGravity(Gravity.TOP | Gravity.CENTER, 0, -100);
                     toastErreur.show();
                     break;
                 }
@@ -129,12 +146,12 @@ public class MenuFragment extends Fragment {
             default -> {
                 nomJoueur2 = menuInput.getText().toString();
                 if (nomJoueur2.isEmpty()) {
-                   toastErreur.show();
+                    toastErreur.show();
                     break;
                 }
                 Intent intent = new Intent(getActivity(), DamierActivity.class);
-                intent.putExtra("nomJoueur1",nomJoueur1);
-                intent.putExtra("nomJoueur2",nomJoueur2);
+                intent.putExtra("nomJoueur1", nomJoueur1);
+                intent.putExtra("nomJoueur2", nomJoueur2);
                 startActivity(intent);
             }
         }

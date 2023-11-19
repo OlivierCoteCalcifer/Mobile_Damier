@@ -30,10 +30,15 @@ public class SingletonJeuDeDames {
      */
     private final ArrayList<Object[]> listePionsPris = new ArrayList<>();
     /**
-     * Cette variable représente les contours du board.
+     * Cette variable représente les contours du board gauche et droite.
      */
-    private final List<Integer> borderBoard =
-            Arrays.asList(1, 2, 3, 4, 5, 6, 16, 26, 36, 46, 47, 48, 49, 50, 45, 35, 25, 15);
+    private final List<Integer> borderBoardLeftRight =
+            Arrays.asList(1, 5, 6, 16, 26, 36, 46, 50, 45, 35, 25, 15);
+    /**
+     * Cette variable représente les contours du board haut et bas.
+     */
+    private final List<Integer> borderBoardtopBottom =
+            Arrays.asList(1, 2, 3, 4, 5, 46, 47, 48, 49, 50);
     /**
      * Cette variable boolean gere le tour du joueur.
      */
@@ -94,13 +99,13 @@ public class SingletonJeuDeDames {
         if (!getEstPartieCommence()) {
             estPartieCommence = true;
         }
-        Pion pion = damier.getListPion().get(positionDepart);
-        char representationPion = pion.getRepresentation();
-        Pion.Couleur couleurPion = pion.getCouleurPion();
-
+        Pion pion = damier.getPion(positionDepart);
         if (pion == null) {
             throw new IllegalArgumentException("Mouvement impossible, aucun pion.");
         }
+        char representationPion = pion.getRepresentation();
+        Pion.Couleur couleurPion = pion.getCouleurPion();
+
 
         // Vérifie si le mouvement est une diagonale.
         boolean estDiagonale = Math.abs(positionArrivee - positionDepart) % 6 == 0 ||
@@ -189,7 +194,7 @@ public class SingletonJeuDeDames {
                 estTourBlanc = !estTourBlanc;
                 return;
             }
-            if (pionEnnemi != null && pion.getCouleurPion() != pionEnnemi.getCouleurPion()) {
+            if (pion.getCouleurPion() != pionEnnemi.getCouleurPion()) {
                 Direction[] directions = getDirection(pion, positionDepart);
                 for (Direction d : directions) {
                     if (positionArrivee % d.value == 0) {
@@ -255,7 +260,10 @@ public class SingletonJeuDeDames {
         if (pion.getCouleurPion() == pionEnemy.getCouleurPion()) {
             throw new IllegalArgumentException("Prise impossible, même couleur.");
         }
-        if (borderBoard.contains(enemyPosition)) {
+        if (borderBoardLeftRight.contains(enemyPosition)) {
+            return;
+        }
+        if (borderBoardtopBottom.contains(enemyPosition)) {
             return;
         }
         if (verifierPriseValide(positionDepart, enemyPosition, positionArrivee)) {
@@ -288,6 +296,7 @@ public class SingletonJeuDeDames {
                     }
                 }
                 default -> {
+                    return;
                 }
             }
             damier.ajouterPion(positionArrivee, pion);
@@ -457,6 +466,8 @@ public class SingletonJeuDeDames {
         for (Direction decalage : decalages) {
             evaluateDecalage(position, decalage, mouvements, checkPartieTermine);
         }
+        mouvements = mouvements.stream().distinct().collect(Collectors.toList());
+
         return mouvements;
     }
 
@@ -482,6 +493,7 @@ public class SingletonJeuDeDames {
         };
     }
 
+
     /**
      * Évalue le décalage à partir d'une position donnée et ajoute les mouvements possibles.
      *
@@ -489,7 +501,8 @@ public class SingletonJeuDeDames {
      * @param decalage   Le décalage a évalué.
      * @param mouvements Une liste pour stocker les mouvements possibles.
      */
-    private void evaluateDecalage(int position, Direction decalage, List<Integer> mouvements,
+    private void evaluateDecalage(int position, Direction
+            decalage, List<Integer> mouvements,
                                   boolean checkPartieTermine) {
         int nouvellePosition = position + decalage.getValue();
 
@@ -531,21 +544,18 @@ public class SingletonJeuDeDames {
 
         if (pionInitiale != null && !estPionOuDame(positionInitiale)) {
             mouvements.add(nouvellePosition);
-            // Utilise gestionAlternanceDame pour la logique de déplacement de la dame
+            // Utilise gestion AlternanceDame pour la logique de déplacement de la dame
             gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance);
         }
 
         if (pionInitiale != null && estPionOuDame(positionInitiale)) {
             Pion pion = damier.getPion(positionInitiale);
+            mouvements.add(nouvellePosition);
             if (!checkBoardPion(positionInitiale, pion, mouvements)) {
                 gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance);
             }
-        }
-        List<Integer> uniqueMouvements = mouvements.stream()
-                .distinct()
-                .collect(Collectors.toList());
-        mouvements = new ArrayList<>(uniqueMouvements);
 
+        }
     }
 
     /**
@@ -564,7 +574,6 @@ public class SingletonJeuDeDames {
         Pion pionInitiale = damier.getPion(positionInitiale);
         String directionStart = directionIndex.toString();
         int directionMove = directionIndex.getValue();
-
         // Add final position if initial piece is a pawn or a dame
         if (pionInitiale != null && estPionOuDame(positionInitiale)) {
             mouvements.add(nouvellePosition);
@@ -573,16 +582,16 @@ public class SingletonJeuDeDames {
         // Loop for handling the dame's diagonal movement
         while (estPositionValide(nouvellePosition)) {
             Pion pionPossibleNouvellePosition = damier.getPion(nouvellePosition);
-            if (borderBoard.contains(nouvellePosition)) {
+            if (pionPossibleNouvellePosition !=null){
                 break;
             }
-            if (pionPossibleNouvellePosition == null) {
+            if (!borderBoardtopBottom.contains(nouvellePosition) || !borderBoardLeftRight.contains(nouvellePosition)) {
                 if (directionStart.contains("START_NOIR")) {
                     nouvellePosition += alternance ? directionMove : directionMove + 1;
                 } else {
                     nouvellePosition += alternance ? directionMove : directionMove - 1;
                 }
-                if (borderBoard.contains(nouvellePosition)) {
+                if (borderBoardLeftRight.contains(nouvellePosition) || borderBoardtopBottom.contains(nouvellePosition)) {
                     if (damier.getPion(nouvellePosition) == null) {
                         mouvements.add(nouvellePosition);
                     }
@@ -590,11 +599,6 @@ public class SingletonJeuDeDames {
                 }
                 alternance = !alternance;
                 mouvements.add(nouvellePosition);
-
-                if (damier.getPion(nouvellePosition) != null) {
-                    int posFinal = alternance ? nouvellePosition + directionMove : nouvellePosition + (directionStart.contains("START_NOIR") ? directionMove + 1 : directionMove - 1);
-                    priseDame(positionInitiale, nouvellePosition, posFinal, damier.getPion(positionInitiale));
-                }
             } else {
                 break;
             }
@@ -611,7 +615,7 @@ public class SingletonJeuDeDames {
         boolean estPionNoir = pion.getCouleurPion() ==
                 Pion.Couleur.Noir && pion.getRepresentation() == 'P';
 
-        if (borderBoard.contains(initialPosition)) {
+        if (borderBoardLeftRight.contains(initialPosition)) {
             if (estPionBlanc) {
                 return handlePionBlancMovesBorder(initialPosition, moves);
             } else if (estPionNoir) {
@@ -622,71 +626,99 @@ public class SingletonJeuDeDames {
     }
 
     private boolean handlePionBlancMovesBorder(int position, List<Integer> moves) {
-        switch (position) {
-            case 6:
-                moves.add(1);
-                return true;
-            case 16:
-                moves.add(11);
-                return true;
-            case 26:
-                moves.add(21);
-                return true;
-            case 36:
-                moves.add(31);
-                return true;
-            case 46:
-                moves.add(41);
-                return true;
-            case 15:
-                moves.add(10);
-                return true;
-            case 25:
-                moves.add(20);
-                return true;
-            case 35:
-                moves.add(30);
-                return true;
-            case 45:
-                moves.add(40);
-                return true;
-            default:
-                return false;
+        moves.clear();
+        if (damier.getPion(position) != null) {
+            switch (position) {
+                case 6 -> {
+                    moves.add(1);
+                    return true;
+                }
+                case 16 -> {
+                    moves.add(11);
+                    return true;
+                }
+                case 26 -> {
+                    moves.add(21);
+                    return true;
+                }
+                case 36 -> {
+                    moves.add(31);
+                    return true;
+                }
+                case 46 -> {
+                    moves.add(41);
+                    return true;
+                }
+                case 15 -> {
+                    moves.add(10);
+                    return true;
+                }
+                case 25 -> {
+                    moves.add(20);
+                    return true;
+                }
+                case 35 -> {
+                    moves.add(30);
+                    return true;
+                }
+                case 45 -> {
+                    moves.add(40);
+                    return true;
+                }
+                default -> {
+                    moves.add(45);
+                    moves.add(44);
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
+
     private boolean handlePionNoirMovesBorder(int position, List<Integer> moves) {
-        switch (position) {
-            case 6:
-                moves.add(11);
-                return true;
-            case 16:
-                moves.add(21);
-                return true;
-            case 26:
-                moves.add(31);
-                return true;
-            case 36:
-                moves.add(41);
-                return true;
-            case 5:
-                moves.add(10);
-                return true;
-            case 15:
-                moves.add(20);
-                return true;
-            case 25:
-                moves.add(30);
-                return true;
-            case 35:
-                moves.add(40);
-                return true;
-            case 45:
-                moves.add(50);
-                return true;
-            default:
-                return false;
+        moves.clear();
+        if (damier.getPion(position) != null) {
+            switch (position) {
+                case 6 -> {
+                    moves.add(11);
+                    return true;
+                }
+                case 16 -> {
+                    moves.add(21);
+                    return true;
+                }
+                case 26 -> {
+                    moves.add(31);
+                    return true;
+                }
+                case 36 -> {
+                    moves.add(41);
+                    return true;
+                }
+                case 5 -> {
+                    moves.add(10);
+                    return true;
+                }
+                case 15 -> {
+                    moves.add(20);
+                    return true;
+                }
+                case 25 -> {
+                    moves.add(30);
+                    return true;
+                }
+                case 35 -> {
+                    moves.add(40);
+                    return true;
+                }
+                default -> {
+                    moves.add(50);
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
 
@@ -715,7 +747,8 @@ public class SingletonJeuDeDames {
      * @param nouvellePosition La position après le mouvement.
      * @param mouvements       Une liste pour stocker les mouvements possibles.
      */
-    private void handleCaptureMouvementPossible(int position, int nouvellePosition, List<Integer> mouvements) {
+    private void handleCaptureMouvementPossible(int position, int nouvellePosition, List<
+            Integer> mouvements) {
         int index = getFinalPositionPrise(position, nouvellePosition);
 
         prisePion(position, nouvellePosition, nouvellePosition + index);
@@ -917,6 +950,20 @@ public class SingletonJeuDeDames {
                     BAS_DROIT_START_NOIR,
                     BAS_GAUCHE_START_NOIR,
                     HAUT_GAUCHE_START_NOIR,
+                    HAUT_DROIT_START_NOIR
+            };
+        }
+
+        public static Direction[] getDirectionStartNoirVersDroite() {
+            return new Direction[]{
+                    BAS_DROIT_START_BLANC,
+                    HAUT_DROIT_START_BLANC
+            };
+        }
+
+        public static Direction[] getDirectionStartBlancVersGauche() {
+            return new Direction[]{
+                    BAS_DROIT_START_NOIR,
                     HAUT_DROIT_START_NOIR
             };
         }
