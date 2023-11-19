@@ -88,9 +88,20 @@ public class MenuFragment extends Fragment {
         menuButton.setOnClickListener(v -> {
             onButtonClickMenu(menuLayout, menuButton, menuText);
         });
+        if (savedInstanceState != null) {
+            compteurBoutonMenu = savedInstanceState.getInt("compteurBoutonMenu", 0);
+            nomJoueur1 = savedInstanceState.getString("nomJoueur1", null);
+            nomJoueur2 = savedInstanceState.getString("nomJoueur2", null);
+        }
         return view;
     }
-
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("compteurBoutonMenu", compteurBoutonMenu);
+        outState.putString("nomJoueur1", nomJoueur1);
+        outState.putString("nomJoueur2", nomJoueur2);
+    }
     private void onButtonClickMenu(LinearLayout menuLayout, Button menuButton, TextView menuText) {
         menuInput.setHint("Entrez votre nom ici");
         switch (compteurBoutonMenu) {

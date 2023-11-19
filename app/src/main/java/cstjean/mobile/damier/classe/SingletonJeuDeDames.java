@@ -38,6 +38,10 @@ public class SingletonJeuDeDames {
      * Cette variable boolean gere le tour du joueur.
      */
     private boolean estTourBlanc = true;
+    /**
+     * Cette variable est pour le changement d'orientation dans l'application
+     */
+    private static boolean estPartieCommence = false;
 
     /**
      * Le constructeur du jeu de dames instantie un damier.
@@ -87,6 +91,9 @@ public class SingletonJeuDeDames {
      * @param positionArrivee Position d'arrivée du pion ou dame.
      */
     public void bouger(int positionDepart, int positionArrivee) {
+        if (!getEstPartieCommence()) {
+            estPartieCommence = true;
+        }
         Pion pion = damier.getListPion().get(positionDepart);
         char representationPion = pion.getRepresentation();
         Pion.Couleur couleurPion = pion.getCouleurPion();
@@ -100,9 +107,11 @@ public class SingletonJeuDeDames {
                 Math.abs(positionArrivee - positionDepart) % 5 == 0 ||
                 Math.abs(positionArrivee - positionDepart) % 4 == 0;
 
-        // Vérifie si la couleur du pion correspond avec le tour des joueurs.
+        // Vérifie si la couleur du pion correspond avec le tour des joueurs selon la couleur
+        // et le tour du joueur ainsi que la representation pour les dames.
         boolean estMouvementAdmissible =
-                (couleurPion == Pion.Couleur.Noir && !estTourBlanc && positionDepart < positionArrivee) ||
+                (couleurPion == Pion.Couleur.Noir && !estTourBlanc &&
+                        positionDepart < positionArrivee) ||
                         (couleurPion == Pion.Couleur.Blanc && estTourBlanc &&
                                 positionDepart > positionArrivee) ||
                         (representationPion == 'D' && !estTourBlanc) ||
@@ -322,6 +331,10 @@ public class SingletonJeuDeDames {
      */
     public List<String> getHistoriqueDeplacementDamier() {
         return historiqueDeplacementDamier;
+    }
+
+    public boolean getEstPartieCommence() {
+        return estPartieCommence;
     }
 
     /**

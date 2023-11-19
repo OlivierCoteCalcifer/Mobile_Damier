@@ -11,4 +11,5 @@
     <string name="msg_validation_1">Entrez le nom du joueur 1</string>
     <string name="msg_validation_2">Entrez le nom du joueur 2</string>
     <string name="msg_btn_validation_2">Valider joueur 2</string>
+    <string name="text_bouton_reset">Recommencer la partie</string>
 </resources>
