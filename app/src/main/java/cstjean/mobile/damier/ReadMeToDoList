@@ -25,13 +25,16 @@ To do List:
     dans le haut du damier, le pion noir ne sait pas ou aller. Il remplace alors un pion blanc dans le bas
     du damier. Mouvement possible serait peut être la cause.
 
+--> Quand on change l'orientation du téléphone, impossible de faire le retour. Peut être fix en sélectionnant
+    le pion après la rotation et en ré-appuyant sur retour. Surement possible de fix définitivement
+    le tout en envoyant l'indexBase dans le saveInstance/onCreateView.
 
 
 
 **********************************************************************************************
 ----> TODO: <----
 **********************************************************************************************
-Mettre des XXX quand la tâche est terminé.
+Mettre des XXXXXXXX quand la tâche est terminé.
 
 Olivier : XXXXXXXX --> Creation des vues et fragments. Design des fragments et bon fonctionnement. (Terminé le 10 novembre)
           XXXXXXXX --> Transfert des noms de joueurs vers le fragment Damier. (Terminé le 10 novembre)
@@ -58,14 +61,14 @@ Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10
          XXXXXXXX --> Réparer les tests pour que chaque test fonctionne et initialiser l'instance pour le scénario du test. (Terminé le 13 novembre)
          XXXXXXXX --> Couper la fonction retourPartie afin de faciliter la compréhension du code (Terminé le 15 novembre)
          XXXXXXXX --> Button onClickListener pour le retour de mouvements. (Terminé le 21 novembre)
+         XXXXXXXX --> Empêcher le retourPartie quand on change l'orientation du téléphone. (Terminé le 21 novembre)
+         --> Ajout de index/indexBase dans le savedInstance pour afficher les mouvements possibles et retourPartie.
          --> Mettre des commentaires dans les fonctions pour simplifier la compréhension d'un autre programmeur.
-         --> Empêcher le retourPartie quand on change l'orientation du téléphone.
          --> Afficher l'historique des mouvements, juste un ou la liste au complet, voir avec Sébastien.***
 
 Both:
         *** --> Voir avec Sébastien pour les mouvements précédent.
          --> Supprimer les commentaire du test estPartieTerminee dans TestSingletonJeuDeDames.
-
 
 
 **********************************************************************************************
