@@ -63,6 +63,8 @@ public class DamierFragment extends Fragment {
     private TextView message_Board;
     private boolean estPartieCommence = false;
 
+    private boolean peutRetour = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,13 +106,14 @@ public class DamierFragment extends Fragment {
         if (savedInstanceState != null) {
             int orientation = getResources().getConfiguration().orientation;
             LinearLayout layoutPrincipale = view.findViewById(R.id.layout_principale);
-            message_Board.setText(savedInstanceState.getString("TextViewContent"));
+            updateTextHistorique(view);
 
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 layoutPrincipale.setOrientation(LinearLayout.HORIZONTAL);
             } else {
                 layoutPrincipale.setOrientation(LinearLayout.VERTICAL);
             }
+            peutRetour = savedInstanceState.getBoolean("PeutRetour");
             estPartieCommence = savedInstanceState.getBoolean("EstPartieCommence");
             if (estPartieCommence) {
                 resetUi();
@@ -131,6 +134,9 @@ public class DamierFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putString("TextViewContent", message_Board.getText().toString());
         outState.putBoolean("EstPartieCommence", estPartieCommence);
+        outState.putBoolean("PeutRetour", peutRetour);
+
+        outState.putString("HistoriqueDamier", jeuDeDames.getHistoriqueDeplacementDamier().toString());
 
         for (int i = 1; i <= 50; i++) { // Assuming you have 50 buttons
             String btnId = String.valueOf(i);
@@ -146,6 +152,7 @@ public class DamierFragment extends Fragment {
     private void setupBoard(View view) {
         message_Board = view.findViewById(R.id.damier_message);
         updateTextView();
+        updateTextHistorique(view);
         GridLayout damierBoard = view.findViewById(R.id.board_damier);
 
         int orientation = view.getContext().getResources().getConfiguration().orientation;
@@ -172,7 +179,7 @@ public class DamierFragment extends Fragment {
                 button.setBackgroundColor(view.getContext().getColor(R.color.boardBlackCase));
                 int finalNumeroManoury = numeroManoury;
                 button.setOnClickListener(v -> {
-                    onClickButton(finalNumeroManoury);
+                    onClickButton(finalNumeroManoury, view);
                 });
                 numeroManoury++;
             } else {
@@ -192,7 +199,7 @@ public class DamierFragment extends Fragment {
         }
         Button buttonRetour = view.findViewById(R.id.damier_button_retour);
         buttonRetour.setOnClickListener(v -> {
-            onClickRetourMouvement();
+            onClickRetourMouvement(view);
         });
         Button buttonReset = view.findViewById(R.id.damier_button_reset);
         buttonReset.setOnClickListener(v -> {
@@ -236,13 +243,14 @@ public class DamierFragment extends Fragment {
     /**
      * Cette methode va appeler les méthodes nécessaire pour le fonctionnnement du jeu.
      */
-    private void onClickButton(int index) {
+    private void onClickButton(int index, View view) {
         if (!jeuDeDames.estPartieTerminee()) {
             resetUi();
             List<Integer> mvtPossible = new ArrayList<>();
             if (pionEnable && index != indexBase) {
                 if (mvtPossiblePionBase != null && mvtPossiblePionBase.contains(index)) {
                     handleMouvementJoueur(index, mvtPossiblePionBase);
+                    updateTextHistorique(view);
                     return;
                 }
             }
@@ -252,6 +260,7 @@ public class DamierFragment extends Fragment {
             }
             char rep = verificationPionNull(index);
             resetUi();
+            peutRetour = true;
             switch (rep) {
                 case 'd', 'p' -> {
                     if (jeuDeDames.getEstTourBlanc()) {
@@ -266,7 +275,10 @@ public class DamierFragment extends Fragment {
                 default -> {
                 }
             }
+            updateTextHistorique(view);
+
         } else {
+            peutRetour = false;
             if (jeuDeDames.getEstTourBlanc()) {
                 updateTextView();
                 Toast.makeText(getContext(), nomJoueur2 + ", vous avez perdu...",Toast.LENGTH_SHORT);
@@ -275,6 +287,18 @@ public class DamierFragment extends Fragment {
                 Toast.makeText(getContext(), nomJoueur1 + ", vous avez perdu...",Toast.LENGTH_SHORT);
             }
         }
+    }
+
+    private void updateTextHistorique(View view) {
+        TextView textHistorique = view.findViewById(R.id.damier_historique);
+
+        if (jeuDeDames.getHistoriqueDeplacementDamier().size() > 0) {
+            int indexHistorique = jeuDeDames.getHistoriqueDeplacementDamier().size() - 1;
+            textHistorique.setText(jeuDeDames.getHistoriqueDeplacementDamier().get(indexHistorique));
+        } else {
+            textHistorique.setText("");
+        }
+
     }
 
     private void handleMouvementJoueur(int index, List<Integer> mvtPossible) {
@@ -367,7 +391,16 @@ public class DamierFragment extends Fragment {
         message_Board.setText(msg);
     }
 
-    private void onClickRetourMouvement() {
+    private void onClickRetourMouvement(View view) {
+        // En supposant ici que l'on peut seulement faire un retour à la fois
+        // 257 - 273 --> Endroit ou l'on reset le peutRetour lors d'un mouvement.
+        if (peutRetour) {
+            jeuDeDames.retourPartie();
+            updateTextHistorique(view);
+        } else
+            Toast.makeText(getContext(), "Retour impossible", Toast.LENGTH_SHORT).show();
+        peutRetour = false;
+
         resetUi();
      }
 

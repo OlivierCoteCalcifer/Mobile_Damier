@@ -21,6 +21,10 @@ To do List:
     la position qui passe par dessus le pion ennemi.
     Je crois que bouger doit handle la capture et tout.
 
+--> Lorsqu'un pion blanc est directement à coté d'un pion noir qui lui se trouve dans la première rangée
+    dans le haut du damier, le pion noir ne sait pas ou aller. Il remplace alors un pion blanc dans le bas
+    du damier. Mouvement possible serait peut être la cause.
+
 
 
 
@@ -53,11 +57,13 @@ Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10
          XXXXXXXX --> Images plus claire pour le pion Blanc (Terminé le 13 novembre)
          XXXXXXXX --> Réparer les tests pour que chaque test fonctionne et initialiser l'instance pour le scénario du test. (Terminé le 13 novembre)
          XXXXXXXX --> Couper la fonction retourPartie afin de faciliter la compréhension du code (Terminé le 15 novembre)
+         XXXXXXXX --> Button onClickListener pour le retour de mouvements. (Terminé le 21 novembre)
          --> Mettre des commentaires dans les fonctions pour simplifier la compréhension d'un autre programmeur.
-         --> Button onClickListener pour le retour de mouvements.
+         --> Empêcher le retourPartie quand on change l'orientation du téléphone.
+         --> Afficher l'historique des mouvements, juste un ou la liste au complet, voir avec Sébastien.***
 
 Both:
-
+        *** --> Voir avec Sébastien pour les mouvements précédent.
          --> Supprimer les commentaire du test estPartieTerminee dans TestSingletonJeuDeDames.
 
 

@@ -33,5 +33,6 @@ public class DamierActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, damierFragment)
                 .commit();
+
     }
 }

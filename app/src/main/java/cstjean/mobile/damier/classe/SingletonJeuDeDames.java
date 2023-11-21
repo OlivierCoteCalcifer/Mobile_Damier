@@ -414,25 +414,18 @@ public class SingletonJeuDeDames {
     private void retourPrise(Pion pion, int index, int positionArrivee, int positionDepart) {
         Object[] objectArray = listePionsPris.get(0);
 
-        // Vérifie si la liste de prise n'est pas vide.
-        if (objectArray != null && objectArray.length > 0) {
-            Object firstElement = objectArray[0];
-
-            if (firstElement instanceof Pion) {
-                pion = (Pion) firstElement;
-            }
-        }
-
         int indexEnemy = listePionsPris.size() - 1;
 
+        Pion pionDeplace = damier.getPion(positionArrivee);
         Pion pionEnemy = (Pion) listePionsPris.get(indexEnemy)[0];
         int positionEnemy = (int) listePionsPris.get(indexEnemy)[1];
 
-        damier.ajouterPion(positionDepart, pion);
+        listePionsPris.remove(indexEnemy);
+
+        damier.ajouterPion(positionDepart, pionDeplace);
         damier.ajouterPion(positionEnemy, pionEnemy);
         damier.retirerPion(positionArrivee);
 
-        listePionsPris.remove(index);
     }
 
     /**
@@ -680,6 +673,11 @@ public class SingletonJeuDeDames {
         moves.clear();
         if (damier.getPion(position) != null) {
             switch (position) {
+                case 1 -> {
+                    moves.add(6);
+                    moves.add(7);
+                    return true;
+                }
                 case 6 -> {
                     moves.add(11);
                     return true;
