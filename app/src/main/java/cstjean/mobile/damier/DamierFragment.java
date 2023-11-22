@@ -298,19 +298,18 @@ public class DamierFragment extends Fragment {
                 @Override
                 public void run() {
                     // Create an intent to start the MenuActivity
-                    Intent intent = new Intent(getContext(), MenuActivity.class);
+                    Intent intent = new Intent(getActivity(), MenuActivity.class);
                     if (jeuDeDames.getEstTourBlanc()) {
                         updateTextView();
-                        Toast.makeText(getContext(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
                     } else {
                         updateTextView();
-                        Toast.makeText(getContext(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
                     }
                     startActivity(intent);
-                    finish();
+                    getActivity().finish();
                 }
             }, 5000);
-
         }
     }
 
