@@ -216,12 +216,16 @@ public class DamierFragment extends Fragment {
         buttonReset.setOnClickListener(v -> {
             onClickResetGame(view);
         });
+        Button buttonTest = view.findViewById(R.id.damier_button_test);
+        buttonTest.setOnClickListener(v -> {
+            onClickTest();
+        });
     }
 
     private void onClickTest() {
         jeuDeDames.vider();
         jeuDeDames.getDamier().ajouterPion(12, new Dames(Pion.Couleur.Blanc));
-        jeuDeDames.getDamier().ajouterPion(24, new Pion(Pion.Couleur.Noir));
+        jeuDeDames.getDamier().ajouterPion(42, new Pion(Pion.Couleur.Noir));
         resetUi();
     }
 

@@ -22,6 +22,10 @@ public class SingletonJeuDeDames {
      */
     private static Damier damier;
     /**
+     * Cette variable est la liste des pions transformés en dames.
+     */
+    private List<Integer> transformationsEnDames = new ArrayList<>();
+    /**
      * Cette variable est l'historique de déplacement selon la notation manoury.
      */
     private final List<String> historiqueDeplacementDamier = new ArrayList<>();
@@ -148,9 +152,11 @@ public class SingletonJeuDeDames {
                 if (estTourBlanc && positionArrivee >= 1 && positionArrivee <= 5) {
                     pion = new Dames(Pion.Couleur.Blanc);
                     damier.ajouterDames(positionArrivee, pion, positionDepart);
+                    transformationsEnDames.add(positionArrivee);
                 } else if (!estTourBlanc && positionArrivee >= 46 && positionArrivee <= 50) {
                     pion = new Dames(Pion.Couleur.Noir);
                     damier.ajouterDames(positionArrivee, pion, positionDepart);
+                    transformationsEnDames.add(positionArrivee);
                 }
                 int finalPos = getFinalPositionPrise(positionDepart, positionArrivee);
                 Pion pionFinish = damier.getPion(finalPos);
@@ -398,6 +404,10 @@ public class SingletonJeuDeDames {
         historiqueDeplacementDamier.remove(index);
     }
 
+    public List<Integer> getTransformationsEnDames() {
+        return transformationsEnDames;
+    }
+
     /**
      * Fait le retour en arrière d'un mouvement.
      *
@@ -406,22 +416,27 @@ public class SingletonJeuDeDames {
      * @param positionDepart  Prend en paramètre la position de départ.
      */
     private void retourMouvement(Pion pion, int positionArrivee, int positionDepart) {
-        if(pion.getRepresentation() == 'd' || pion.getRepresentation() == 'D') {
-            if (estTourBlanc) {
-                pion = new Dames(Pion.Couleur.Blanc);
+        boolean isDame = (pion.getRepresentation() == 'd' || pion.getRepresentation() == 'D');
+        boolean isTransformationEnDame = getTransformationsEnDames().contains(positionArrivee);
+
+        if (isDame) {
+            if (isTransformationEnDame) {
+                Pion.Couleur couleurPion = estTourBlanc ? Pion.Couleur.Blanc : Pion.Couleur.Noir;
+                pion = isTransformationEnDame ? new Pion(couleurPion) : new Dames(couleurPion);
+                transformationsEnDames.remove(transformationsEnDames.size() - 1);
             } else {
-                pion = new Dames(Pion.Couleur.Noir);
+                Pion.Couleur couleurPion = estTourBlanc ? Pion.Couleur.Blanc : Pion.Couleur.Noir;
+                pion = new Dames(couleurPion);
             }
         } else {
-            if (estTourBlanc) {
-                pion = new Pion(Pion.Couleur.Blanc);
-            } else {
-                pion = new Pion(Pion.Couleur.Noir);
-            }
+            Pion.Couleur couleurPion = estTourBlanc ? Pion.Couleur.Blanc : Pion.Couleur.Noir;
+            pion = new Pion(couleurPion);
         }
+
         damier.ajouterPion(positionDepart, pion);
         damier.retirerPion(positionArrivee);
     }
+
 
     /**
      * Fait le retour en arrière d'une prise.
