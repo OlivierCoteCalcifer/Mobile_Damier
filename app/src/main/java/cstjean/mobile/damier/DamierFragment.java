@@ -1,5 +1,6 @@
 package cstjean.mobile.damier;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -223,7 +224,7 @@ public class DamierFragment extends Fragment {
 
     private void onClickTest() {
         jeuDeDames.vider();
-        jeuDeDames.getDamier().ajouterPion(15, new Dames(Pion.Couleur.Blanc));
+        jeuDeDames.getDamier().ajouterPion(12, new Dames(Pion.Couleur.Blanc));
         jeuDeDames.getDamier().ajouterPion(24, new Pion(Pion.Couleur.Noir));
         resetUi();
     }
@@ -401,6 +402,36 @@ public class DamierFragment extends Fragment {
             moveButton.setBackgroundColor(
                     moveButton.getContext().getColor(R.color.boardBlackCase));
         }
+        if (jeuDeDames.estPartieTerminee()) {
+            affichageMessageGagnantEtPerdant();
+            jeuDeDames.vider();
+            jeuDeDames.reset();
+        }
+    }
+
+    private void affichageMessageGagnantEtPerdant() {
+        if (jeuDeDames.getEstTourBlanc()) {
+            updateTextView();
+            Toast.makeText(getActivity(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
+        } else {
+            updateTextView();
+            Toast.makeText(getActivity(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
+        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Context context = getContext();
+
+                if (context != null) {
+                    Intent intent = new Intent(getActivity(), MenuActivity.class);
+                    context.startActivity(intent);
+
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                    }
+                }
+            }
+        }, 5000); // 2 secondes de retard
     }
 
     private void updateTextView() {

@@ -217,9 +217,11 @@ public class SingletonJeuDeDames {
      * @param positionFinal  Position final apres la prise.
      */
     private void priseDame(int positionDepart, int positionEnnemi, int positionFinal, Pion pion) {
+        listePionsPris.add(new Object[]{damier.getListPion().get(positionEnnemi), positionEnnemi});
         damier.retirerPion(positionDepart);
         damier.retirerPion(positionEnnemi);
         damier.ajouterPion(positionFinal, pion);
+        manouryHistoryBuilderPrise(positionDepart, positionFinal);
         estTourBlanc = !estTourBlanc;
     }
 
@@ -233,6 +235,24 @@ public class SingletonJeuDeDames {
         StringBuilder sb = new StringBuilder();
         sb.append(positionDepart)
                 .append("-")
+                .append(positionArrivee);
+
+        if (!estTourBlanc) {
+            sb.append(")").insert(0, "(");
+        }
+        historiqueDeplacementDamier.add(sb.toString());
+    }
+
+    /**
+     * Cette methode creer le string nécessaire pour l'historique en manoury.
+     *
+     * @param positionDepart  Position de départ du pion.
+     * @param positionArrivee Position de départ du pion.
+     */
+    private void manouryHistoryBuilderPrise(int positionDepart, int positionArrivee) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(positionDepart)
+                .append("x")
                 .append(positionArrivee);
 
         if (!estTourBlanc) {
@@ -268,15 +288,8 @@ public class SingletonJeuDeDames {
         if (verifierPriseValide(positionDepart, enemyPosition, positionArrivee)) {
             listePionsPris.add(new Object[]{damier.getListPion().get(enemyPosition), enemyPosition});
 
-            StringBuilder sb = new StringBuilder();
-            sb.append(positionDepart)
-                    .append("x")
-                    .append(positionArrivee);
+            manouryHistoryBuilderPrise(positionDepart, positionArrivee);
 
-            if (!estTourBlanc) {
-                sb.append(")").insert(0, "(");
-            }
-            historiqueDeplacementDamier.add(sb.toString());
             switch (pion.getCouleurPion()) {
                 case Blanc -> {
                     if (positionArrivee <= 5) {
@@ -375,11 +388,11 @@ public class SingletonJeuDeDames {
         // Determiner si le tour était au blanc ou noir et rétablie l'ancien tour
         determinerTour(dernierMouvement);
 
-        Pion pionBouger = damier.getPion(positionArrivee);
+        Pion pionABouger = damier.getPion(positionArrivee);
         if (!estPrise) {
-            retourMouvement(pionBouger, positionArrivee, positionDepart);
+            retourMouvement(pionABouger, positionArrivee, positionDepart);
         } else {
-            retourPrise(pionBouger, index, positionArrivee, positionDepart);
+            retourPrise(positionArrivee, positionDepart);
         }
 
         historiqueDeplacementDamier.remove(index);
@@ -393,7 +406,7 @@ public class SingletonJeuDeDames {
      * @param positionDepart  Prend en paramètre la position de départ.
      */
     private void retourMouvement(Pion pion, int positionArrivee, int positionDepart) {
-        if (pion.getRepresentation() == 'd' || pion.getRepresentation() == 'D') {
+        if(pion.getRepresentation() == 'd' || pion.getRepresentation() == 'D') {
             if (estTourBlanc) {
                 pion = new Dames(Pion.Couleur.Blanc);
             } else {
@@ -413,14 +426,10 @@ public class SingletonJeuDeDames {
     /**
      * Fait le retour en arrière d'une prise.
      *
-     * @param pion            Prend en paramètre le pion bougé.
-     * @param index           Prend en paramètre l'index du pion pris.
      * @param positionArrivee Prend en paramètre la posision d'arrivée.
      * @param positionDepart  Prend en paramètre la position de départ.
      */
-    private void retourPrise(Pion pion, int index, int positionArrivee, int positionDepart) {
-        Object[] objectArray = listePionsPris.get(0);
-
+    private void retourPrise(int positionArrivee, int positionDepart) {
         int indexEnemy = listePionsPris.size() - 1;
 
         Pion pionDeplace = damier.getPion(positionArrivee);
@@ -432,7 +441,6 @@ public class SingletonJeuDeDames {
         damier.ajouterPion(positionDepart, pionDeplace);
         damier.ajouterPion(positionEnemy, pionEnemy);
         damier.retirerPion(positionArrivee);
-
     }
 
     /**
