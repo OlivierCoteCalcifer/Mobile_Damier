@@ -165,10 +165,6 @@ public class DamierFragment extends Fragment {
         updateTextView();
         updateTextHistorique(view);
         GridLayout damierBoard = view.findViewById(R.id.board_damier);
-        Button buttonTest = view.findViewById(R.id.damier_button_test);
-        buttonTest.setOnClickListener(v -> {
-            onClickTest();
-        });
 
         int orientation = view.getContext().getResources().getConfiguration().orientation;
         boolean isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT;
@@ -300,23 +296,6 @@ public class DamierFragment extends Fragment {
                 }
             }
             updateTextHistorique(view);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // Create an intent to start the MenuActivity
-                    Intent intent = new Intent(getContext(), MenuActivity.class);
-                    if (jeuDeDames.getEstTourBlanc()) {
-                        updateTextView();
-                        Toast.makeText(getActivity(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
-                    } else {
-                        updateTextView();
-                        Toast.makeText(getActivity(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
-                    }
-                    startActivity(intent);
-                    getActivity().finish();
-                }
-            }, 2000);
         }
     }
 
