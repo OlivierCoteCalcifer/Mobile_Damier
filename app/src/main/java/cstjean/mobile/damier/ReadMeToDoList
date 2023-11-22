@@ -19,6 +19,8 @@ To do List:
     mouvement impossible case déjà prise. Le problème est probablement dans gererMouvementDames(ligne 184).
 --> La loop pour les mouvements de dames retourne un position déjà occupé ce qui peut créer des conflits
 
+--> Mise en commentaire de la ligne 154 de DamierFragment, causait des bugs lors de la rotation
+
 XXXXXXX --> De plus, je crois que quand on joue un tour sur l'interface qui bypass un tour de jour c'est
             ce qui cause un crash par la suite.
             En gros, tu as fini ton tour en te déplacement, mais il a une possibilité pour une prise.
@@ -62,7 +64,6 @@ Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10
          XXXXXXXX --> Couper la fonction retourPartie afin de faciliter la compréhension du code (Terminé le 15 novembre)
          XXXXXXXX --> Button onClickListener pour le retour de mouvements. (Terminé le 21 novembre)
          XXXXXXXX --> Empêcher le retourPartie quand on change l'orientation du téléphone. (Terminé le 21 novembre)
-         --> Ajout de index/indexBase dans le savedInstance pour afficher les mouvements possibles et retourPartie.
          --> Mettre des commentaires dans les fonctions pour simplifier la compréhension d'un autre programmeur.
          --> Afficher l'historique des mouvements, juste un ou la liste au complet, voir avec Sébastien.***
 

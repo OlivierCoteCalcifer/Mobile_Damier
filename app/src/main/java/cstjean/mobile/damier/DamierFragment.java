@@ -81,6 +81,8 @@ public class DamierFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_damier, container, false);
         Bundle args = getArguments();
+
+        // Récupère le nom des joueurs s'ils ne sont pas null.
         if (args != null) {
             nomJoueur1 = args.getString("Joueur1");
             nomJoueur2 = args.getString("Joueur2");
@@ -88,6 +90,8 @@ public class DamierFragment extends Fragment {
             nomJoueur1 = "Joueur1";
             nomJoueur2 = "Joueur2";
         }
+
+        // Création du damier.
         adjustLayoutForOrientation(view);
         setupBoard(view);
         setupBoardWithImageChecker(view);
@@ -119,6 +123,7 @@ public class DamierFragment extends Fragment {
             } else {
                 layoutPrincipale.setOrientation(LinearLayout.VERTICAL);
             }
+            // Récupère les bools
             peutRetour = savedInstanceState.getBoolean("PeutRetour");
             estPartieCommence = savedInstanceState.getBoolean("EstPartieCommence");
             if (estPartieCommence) {
@@ -138,6 +143,8 @@ public class DamierFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        // Sauvegarde les variables lors de la rotation de l'appareil.
         outState.putString("TextViewContent", message_Board.getText().toString());
         outState.putBoolean("EstPartieCommence", estPartieCommence);
         outState.putBoolean("PeutRetour", peutRetour);
@@ -151,7 +158,7 @@ public class DamierFragment extends Fragment {
                             "id", requireContext().getPackageName()));
 
             // Save the resource ID of the drawable
-            outState.putInt("ImageButtonDrawable_" + i, (Integer) button.getTag());
+            //outState.putInt("ImageButtonDrawable_" + i, (Integer) button.getTag());
         }
     }
 
@@ -403,12 +410,11 @@ public class DamierFragment extends Fragment {
     private void onClickRetourMouvement(View view) {
         // En supposant ici que l'on peut seulement faire un retour à la fois
         // Ligne 257 - 273 --> Endroit ou l'on reset le peutRetour lors d'un mouvement.
-        if (peutRetour) {
+        if (peutRetour && jeuDeDames.getHistoriqueDeplacementDamier().size() > 0) {
             jeuDeDames.retourPartie();
             updateTextHistorique(view);
         } else
             Toast.makeText(getContext(), "Retour impossible", Toast.LENGTH_SHORT).show();
-        peutRetour = false;
 
         resetUi();
     }
