@@ -65,6 +65,8 @@ Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10
          XXXXXXXX --> Button onClickListener pour le retour de mouvements. (Terminé le 21 novembre)
          XXXXXXXX --> Empêcher le retourPartie quand on change l'orientation du téléphone. (Terminé le 21 novembre)
          XXXXXXXX --> Mettre des commentaires dans les fonctions pour simplifier la compréhension d'un autre programmeur.
+         XXXXXXXX --> Permettre de retourPartie une dame vers un pion. (Terminé le 22 novembre)
+         --> Ajuster les tests du singleton.
          --> Afficher l'historique des mouvements, juste un ou la liste au complet, voir avec Sébastien.***
 
 Both:

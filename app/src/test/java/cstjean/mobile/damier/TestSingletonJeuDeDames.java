@@ -517,6 +517,20 @@ public class TestSingletonJeuDeDames extends TestCase {
     }
 
     @Test
+    public void testRetourPartiePromotion(){
+        jeu.reset();
+        jeu.vider();
+        jeu.getDamier().ajouterPion(42, new Pion(Pion.Couleur.Noir));
+        jeu.getDamier().ajouterPion(6, new Pion(Pion.Couleur.Blanc));
+        jeu.bouger(6, 1);
+        jeu.bouger(42, 47);
+        jeu.bouger(1, 6);
+        jeu.retourPartie();
+        jeu.retourPartie();
+        assertEquals('P', jeu.getDamier().getPion(42).getRepresentation());
+    }
+
+    @Test
     public void testBougerBorder() {
         jeu.reset();
         jeu.vider();
