@@ -44,7 +44,7 @@ public class SingletonJeuDeDames {
      */
     private boolean estTourBlanc = true;
     /**
-     * Cette variable est pour le changement d'orientation dans l'application
+     * Cette variable est pour le changement d'orientation dans l'application.
      */
     private static boolean estPartieCommence = false;
 
@@ -105,7 +105,6 @@ public class SingletonJeuDeDames {
         }
         char representationPion = pion.getRepresentation();
         Pion.Couleur couleurPion = pion.getCouleurPion();
-
 
         // Vérifie si le mouvement est une diagonale.
         boolean estDiagonale = Math.abs(positionArrivee - positionDepart) % 6 == 0 ||
@@ -472,18 +471,30 @@ public class SingletonJeuDeDames {
      * @return Un tableau des décalages possibles pour le pion à la position donnée.
      */
     private Direction[] getDirection(Pion pion, int position) {
-        int index = (position % 10 >= 1 && position % 10 <= 5) ? 0 : 1;
-        return switch (pion.getRepresentation()) {
-            case 'P' -> (index == 0) ?
-                    Direction.getDirectionBasStartBlanc() :
+        boolean isIndexZero = position % 10 >= 1 && position % 10 <= 5;
+        char representation = pion.getRepresentation();
+
+        if (representation == 'P') {
+            return isIndexZero ? Direction.getDirectionBasStartBlanc() :
                     Direction.getDirectionBasStartNoir();
-            case 'p' -> (index == 0) ?
-                    Direction.getDirectionHautStartBlanc() :
+        } else if (representation == 'p') {
+            return isIndexZero ? Direction.getDirectionHautStartBlanc() :
                     Direction.getDirectionHautStartNoir();
-            default -> (index == 0) ?
-                    Direction.getDirectionStartBlanc() :
-                    Direction.getDirectionStartNoir();
-        };
+        } else {
+            if (isIndexZero) {
+                if (borderBoardLeftRight.contains(position)) {
+                    if (Arrays.asList(6, 16, 26, 36).contains(position)) {
+                        return Direction.getDirectionDameStartBlancVersDroite();
+                    }
+                    if (Arrays.asList(15, 25, 35, 45).contains(position)) {
+                        return Direction.getDirectionDameStartNoirVerDroite();
+                    }
+                }
+                return Direction.getDirectionStartBlanc();
+            } else {
+                return Direction.getDirectionStartNoir();
+            }
+        }
     }
 
 
@@ -506,7 +517,7 @@ public class SingletonJeuDeDames {
         Pion currentPion = damier.getListPion().get(position);
         Pion targetPion = damier.getListPion().get(nouvellePosition);
         if (targetPion == null) {
-            addPossibleMovements(nouvellePosition, decalage, mouvements);
+            addPossibleMovements(position, nouvellePosition, decalage, mouvements, checkPartieTermine);
         } else {
             if (currentPion != null) {
                 if (targetPion.getCouleurPion() != currentPion.getCouleurPion()) {
@@ -528,26 +539,24 @@ public class SingletonJeuDeDames {
      * @param directionIndex   Enum de la direction.
      * @param mouvements       La liste dans laquelle ajouter les mouvements possibles.
      */
-    private void addPossibleMovements(int nouvellePosition, Direction directionIndex,
-                                      List<Integer> mouvements) {
+    private void addPossibleMovements(int position, int nouvellePosition, Direction directionIndex,
+                                      List<Integer> mouvements, boolean checkPartieTermine) {
+        Pion pion = damier.getPion(position);
         int positionInitiale = nouvellePosition - directionIndex.getValue();
-        Pion pionInitiale = damier.getListPion().get(positionInitiale);
         // Ce boolean est pour une alternance -1 ou + 1 dans le mouvement de diagonale de la dame.
         boolean alternance = false;
 
-        if (pionInitiale != null && !estPionOuDame(positionInitiale)) {
+        if (pion != null && !estPionOuDame(position)) {
             mouvements.add(nouvellePosition);
             // Utilise gestion AlternanceDame pour la logique de déplacement de la dame
-            gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance);
+            gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance, checkPartieTermine);
         }
 
-        if (pionInitiale != null && estPionOuDame(positionInitiale)) {
-            Pion pion = damier.getPion(positionInitiale);
+        if (pion != null && estPionOuDame(position)) {
             mouvements.add(nouvellePosition);
             if (!checkBoardPion(positionInitiale, pion, mouvements)) {
-                gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance);
+                gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance, checkPartieTermine);
             }
-
         }
     }
 
@@ -562,11 +571,17 @@ public class SingletonJeuDeDames {
      * @param alternance       Boolean pour faire l'alternance + 1 ou -1.
      */
     private void gestionAlternance(int nouvellePosition, Direction directionIndex,
-                                   List<Integer> mouvements, boolean alternance) {
+                                   List<Integer> mouvements, boolean alternance,
+                                   boolean checkPartieTermine) {
         int positionInitiale = nouvellePosition - directionIndex.getValue();
         Pion pionInitiale = damier.getPion(positionInitiale);
         String directionStart = directionIndex.toString();
         int directionMove = directionIndex.getValue();
+        if (borderBoardLeftRight.contains(nouvellePosition) ||
+                borderBoardtopBottom.contains(nouvellePosition) && !checkPartieTermine) {
+            mouvements.add(nouvellePosition);
+            return;
+        }
         // Add final position if initial piece is a pawn or a dame
         if (pionInitiale != null && estPionOuDame(positionInitiale)) {
             mouvements.add(nouvellePosition);
@@ -575,7 +590,7 @@ public class SingletonJeuDeDames {
         // Loop for handling the dame's diagonal movement
         while (estPositionValide(nouvellePosition)) {
             Pion pionPossibleNouvellePosition = damier.getPion(nouvellePosition);
-            if (pionPossibleNouvellePosition !=null){
+            if (pionPossibleNouvellePosition != null) {
                 break;
             }
             if (!borderBoardtopBottom.contains(nouvellePosition) || !borderBoardLeftRight.contains(nouvellePosition)) {
@@ -588,10 +603,11 @@ public class SingletonJeuDeDames {
                     if (damier.getPion(nouvellePosition) == null) {
                         mouvements.add(nouvellePosition);
                     }
-                    break;
+                    return;
                 }
                 alternance = !alternance;
                 mouvements.add(nouvellePosition);
+
             } else {
                 break;
             }
@@ -668,7 +684,6 @@ public class SingletonJeuDeDames {
         return false;
     }
 
-
     private boolean handlePionNoirMovesBorder(int position, List<Integer> moves) {
         moves.clear();
         if (damier.getPion(position) != null) {
@@ -719,7 +734,6 @@ public class SingletonJeuDeDames {
         return false;
     }
 
-
     /**
      * Cette methode verifie si le pion est une dame ou un pion.
      *
@@ -729,7 +743,7 @@ public class SingletonJeuDeDames {
     private boolean estPionOuDame(int position) {
         Pion pion = damier.getPion(position);
         if (pion != null) {
-            char i = damier.getListPion().get(position).getRepresentation();
+            char i = pion.getRepresentation();
             return switch (i) {
                 case 'P', 'p' -> true;
                 default -> false;
@@ -799,13 +813,13 @@ public class SingletonJeuDeDames {
     }
 
     /**
-     * Vérifie s'il y a des mouvements possible pour la position
+     * Vérifie s'il y a des mouvements possible pour la position.
      *
      * @param position position a verifier.
      * @return boolean True si mouvement restants, false si aucun mouvement.
      */
-    private boolean estMouvementRestant(int position, boolean checkPartieTermine) {
-        return mouvementsPossibles(position, true).isEmpty();
+    private boolean estMouvementRestant(int position, boolean checkPartieTerminee) {
+        return mouvementsPossibles(position, checkPartieTerminee).isEmpty();
     }
 
     /**
@@ -1015,6 +1029,20 @@ public class SingletonJeuDeDames {
             return new Direction[]{
                     HAUT_GAUCHE_START_NOIR,
                     HAUT_DROIT_START_NOIR
+            };
+        }
+
+        public static Direction[] getDirectionDameStartNoirVerDroite() {
+            return new Direction[]{
+                    HAUT_DROIT_START_NOIR,
+                    BAS_DROIT_START_NOIR
+            };
+        }
+
+        public static Direction[] getDirectionDameStartBlancVersDroite() {
+            return new Direction[]{
+                    HAUT_GAUCHE_START_BLANC,
+                    BAS_GAUCHE_START_BLANC
             };
         }
 

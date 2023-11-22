@@ -124,6 +124,6 @@ public class Damier {
      * @return retourne un pion.
      */
     public Pion getPion(int index) {
-        return this.listPions.get(index);
+        return listPions.get(index);
     }
 }

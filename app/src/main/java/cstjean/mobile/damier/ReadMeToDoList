@@ -13,26 +13,23 @@ To do List:
 
 
 **********************************************************************************************
-----> BUG : <----
+                                        ----> BUG : <----
 **********************************************************************************************
+--> La prise dame fonctionne pas vraiment, parfois on prend une position et elle retourne
+    mouvement impossible case déjà prise. Le problème est probablement dans gererMouvementDames(ligne 184).
+--> La loop pour les mouvements de dames retourne un position déjà occupé ce qui peut créer des conflits
 
---> Capture automatique si on bouge un pion adjacent à l'autre, si je met la ligne 397 en commentaire
-    dans Singleton, on peut plus faire de capture automatique. De plus, mouvement possible doit donner
-    la position qui passe par dessus le pion ennemi.
-    Je crois que bouger doit handle la capture et tout.
-
---> Lorsqu'un pion blanc est directement à coté d'un pion noir qui lui se trouve dans la première rangée
-    dans le haut du damier, le pion noir ne sait pas ou aller. Il remplace alors un pion blanc dans le bas
-    du damier. Mouvement possible serait peut être la cause.
-
---> Quand on change l'orientation du téléphone, impossible de faire le retour. Peut être fix en sélectionnant
-    le pion après la rotation et en ré-appuyant sur retour. Surement possible de fix définitivement
-    le tout en envoyant l'indexBase dans le saveInstance/onCreateView.
+XXXXXXX --> De plus, je crois que quand on joue un tour sur l'interface qui bypass un tour de jour c'est
+            ce qui cause un crash par la suite.
+            En gros, tu as fini ton tour en te déplacement, mais il a une possibilité pour une prise.
+            Tu appuis sur ta pièce et tu peux faire la prise, par contre elle n'est pas enregistré dans le
+            damier. Donc, plus tard si tu veux te déplacer à la place que ta pièce avait avant la prise, le
+            jeu va planté avec Impossible mouvement ou prise, case déjà prise.
 
 
 
 **********************************************************************************************
-----> TODO: <----
+                                        ----> TODO: <----
 **********************************************************************************************
 Mettre des XXXXXXXX quand la tâche est terminé.
 
@@ -48,10 +45,13 @@ Olivier : XXXXXXXX --> Creation des vues et fragments. Design des fragments et b
           XXXXXXXX          Pour le damier
           XXXXXXXX          Pour le menu
           XXXXXXXX --> Faire le onClickListener avec toutes les fonctions du damier.
-          XXXXXXXX --> Mouvements fonctionnels
+          XXXXXXXX --> Mouvements dans le jeu et les côtés fonctionnels
           XXXXXXXX          Pion
                             Dames
           XXXXXXXX --> Implementation des messages de victoire et toast de defaite.
+          XXXXXXXX --> Prise fonctionnels
+          XXXXXXXX          Pion
+                            Dames
 
 
 
@@ -67,10 +67,52 @@ Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10
          --> Afficher l'historique des mouvements, juste un ou la liste au complet, voir avec Sébastien.***
 
 Both:
-        *** --> Voir avec Sébastien pour les mouvements précédent.
+         XXXXXXXX --> Fix pour le textView de l'historique qui se réinitialisait pas en appuyant sur reset
          --> Supprimer les commentaire du test estPartieTerminee dans TestSingletonJeuDeDames.
-
+         --> Refaire les tests singleton et perfectionner le tout avec les nouveaux éléments
+         ******** --> Voir avec Sébastien pour les mouvements précédent.
 
 **********************************************************************************************
-----> Il y a un screenshot des consignes du TP 2 dans le dossier parent du projet. <----
+    ----> Il y a un screenshot des consignes du TP 2 dans le dossier parent du projet. <----
+                            ----> Consigne du TP 2 - Damier . <----
 **********************************************************************************************
+
+                                    ---> Remise 2 <---
+Vous devez créer l’application Android qui permettra de jouer une partie complète de dames entre
+deux joueurs.
+
+Si votre remise 1 est bien conçue, vous devriez pouvoir l’utiliser directement sans modifier les classes.
+La remise 2 est simplement la représentation graphique des règles et du déroulement du jeu. Faites
+attention de ne pas mélanger le code de la couche d’interface utilisateur avec celui de la couche de la
+logique métier et des données.
+
+**********************************************************************************************
+                                    ---> CheckList <---
+**********************************************************************************************
+
+XXXXXXXX --> Le choix de la disposition des éléments vous appartient. Votre application doit avoir une apparence
+XXXXXXXX     soignée et professionnelle.
+XXXXXXXX     Avant de débuter la partie, vous devez demander le nom des deux joueurs. Vous utiliserez ces noms
+XXXXXXXX     pour indiquer à qui est le tour. La saisie est obligatoire.
+
+**********************************************************************************************
+                        ---> VOIR SEB POUR AFFICHER TOUTE LA LISTE <---
+**********************************************************************************************
+XXXXXXXX --> Vous devez afficher la liste des déplacements sous forme de notation Manoury et permettre de revenir
+XXXXXXXX     à un état précédent du damier.
+
+XXXXXXXX --> Lorsqu’on touche à une des pièces du joueur dont c’est le tour, vous devez colorer les cases où le
+XXXXXXXX     déplacement est possible pour la pièce.
+
+--> À la fin de la partie, le nom du gagnant doit être affiché et on doit pouvoir revenir à l’écran de choix des
+    noms pour démarrer une nouvelle partie.
+
+--> Vous devez faire des tests instrumentés pour tester l’interface de saisie des noms en début de partie.
+
+XXXXXXXX --> Vous n’avez pas à faire des tests d’interface pour le jeu de dames.
+
+XXXXXXXX --> Votre application doit fonctionner en mode portrait ET en mode paysage sans perte de données.
+
+XXXXXXXX --> Votre application doit rouler dans l’émulateur Pixel 5 API 33. Minimum API 24.
+
+XXXXXXXX --> La remise 2 doit inclure les corrections de la remise 1. Le code sera réévalué.

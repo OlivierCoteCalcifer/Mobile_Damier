@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.IllegalFormatException;
 import java.util.List;
 
-import cstjean.mobile.damier.classe.Dames;
 import cstjean.mobile.damier.classe.Pion;
 import cstjean.mobile.damier.classe.SingletonJeuDeDames;
 
@@ -61,8 +60,15 @@ public class DamierFragment extends Fragment {
      * TextView pour le message des tours des joueurs.
      */
     private TextView message_Board;
+    /**
+     * Cette variable est pour l'initialisation du board dans le onCreateView et
+     * setupBoardWithImageChecker.
+     */
     private boolean estPartieCommence = false;
-
+    /**
+     * Cette variable peutRetour est pour le retour sur un mouvement. Elle existe pour éviter
+     * d'appuyer à répétitions.
+     */
     private boolean peutRetour = false;
 
     @Override
@@ -203,7 +209,7 @@ public class DamierFragment extends Fragment {
         });
         Button buttonReset = view.findViewById(R.id.damier_button_reset);
         buttonReset.setOnClickListener(v -> {
-            onClickResetGame();
+            onClickResetGame(view);
         });
     }
 
@@ -216,7 +222,7 @@ public class DamierFragment extends Fragment {
             int resId = view.getResources().getIdentifier(id, "id",
                     view.getContext().getPackageName());
             ImageButton button = view.findViewById(resId);
-
+            button.setTag("button" + i);
             button.setBackgroundColor(view.getContext().getColor(R.color.boardBlackCase));
 
             char rep = verificationPionNull(i);
@@ -246,7 +252,11 @@ public class DamierFragment extends Fragment {
     private void onClickButton(int index, View view) {
         if (!jeuDeDames.estPartieTerminee()) {
             resetUi();
-            List<Integer> mvtPossible = new ArrayList<>();
+            Pion pion = jeuDeDames.getDamier().getPion(index);
+            /*if (pion != null && checkClickTour(indexBase)) {
+                return;
+            }*/
+            List<Integer> mvtPossible;
             if (pionEnable && index != indexBase) {
                 if (mvtPossiblePionBase != null && mvtPossiblePionBase.contains(index)) {
                     handleMouvementJoueur(index, mvtPossiblePionBase);
@@ -255,6 +265,7 @@ public class DamierFragment extends Fragment {
                 }
             }
             mvtPossible = jeuDeDames.mouvementsPossibles(index, false);
+
             if (mvtPossible == null) {
                 mvtPossible = new ArrayList<>();
             }
@@ -273,6 +284,7 @@ public class DamierFragment extends Fragment {
                     }
                 }
                 default -> {
+                    return;
                 }
             }
             updateTextHistorique(view);
@@ -281,20 +293,31 @@ public class DamierFragment extends Fragment {
             peutRetour = false;
             if (jeuDeDames.getEstTourBlanc()) {
                 updateTextView();
-                Toast.makeText(getContext(), nomJoueur2 + ", vous avez perdu...",Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
             } else {
                 updateTextView();
-                Toast.makeText(getContext(), nomJoueur1 + ", vous avez perdu...",Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+/*
+    private boolean checkClickTour(int index) {
+        Pion pion = jeuDeDames.getDamier().getPion(index);
+        if (pion != null) {
+            if (jeuDeDames.getEstTourBlanc()) {
+
+            }
+        }
+    }*/
 
     private void updateTextHistorique(View view) {
         TextView textHistorique = view.findViewById(R.id.damier_historique);
 
         if (jeuDeDames.getHistoriqueDeplacementDamier().size() > 0) {
             int indexHistorique = jeuDeDames.getHistoriqueDeplacementDamier().size() - 1;
-            textHistorique.setText(jeuDeDames.getHistoriqueDeplacementDamier().get(indexHistorique));
+            textHistorique.setText(jeuDeDames.getHistoriqueDeplacementDamier()
+                    .get(indexHistorique));
         } else {
             textHistorique.setText("");
         }
@@ -307,7 +330,7 @@ public class DamierFragment extends Fragment {
             ajoutUIOnClick(index, mvtPossible);
             indexBase = index;
             mvtPossiblePionBase = new ArrayList<>(mvtPossible);
-        } else if (pionEnable && mvtPossiblePionBase.contains(index)) {
+        } else if (pionEnable && mvtPossiblePionBase.contains(index) && indexBase != null) {
             jeuDeDames.bouger(indexBase, index);
             mvtPossiblePionBase.clear();
             mvtPossible.clear();
@@ -375,17 +398,17 @@ public class DamierFragment extends Fragment {
     private void updateTextView() {
         String msg;
 
-        if(!jeuDeDames.estPartieTerminee()){
+        if (!jeuDeDames.estPartieTerminee()) {
             if (jeuDeDames.getEstTourBlanc()) {
                 msg = "Au tour de \n" + nomJoueur1;
             } else {
                 msg = "Au tour de \n" + nomJoueur2;
             }
         } else {
-            if (!jeuDeDames.getEstTourBlanc()){
-                msg ="Félicitations " + nomJoueur1 + "!!!";
+            if (!jeuDeDames.getEstTourBlanc()) {
+                msg = "Félicitations " + nomJoueur1 + "!!!";
             } else {
-                msg ="Félicitations " + nomJoueur2 + "!!!";
+                msg = "Félicitations " + nomJoueur2 + "!!!";
             }
         }
         message_Board.setText(msg);
@@ -393,7 +416,7 @@ public class DamierFragment extends Fragment {
 
     private void onClickRetourMouvement(View view) {
         // En supposant ici que l'on peut seulement faire un retour à la fois
-        // 257 - 273 --> Endroit ou l'on reset le peutRetour lors d'un mouvement.
+        // Ligne 257 - 273 --> Endroit ou l'on reset le peutRetour lors d'un mouvement.
         if (peutRetour) {
             jeuDeDames.retourPartie();
             updateTextHistorique(view);
@@ -402,12 +425,13 @@ public class DamierFragment extends Fragment {
         peutRetour = false;
 
         resetUi();
-     }
+    }
 
-    private void onClickResetGame() {
-        // C'est juste pour cette setup le board pour mes tests avec les prises et tout. Feel free to change it.
+    private void onClickResetGame(View view) {
         jeuDeDames.vider();
         jeuDeDames.reset();
+        TextView textHistorique = view.findViewById(R.id.damier_historique);
+        textHistorique.setText("");
         resetUi();
         Toast.makeText(getContext(), "Partie recommencée", Toast.LENGTH_SHORT).show();
     }
