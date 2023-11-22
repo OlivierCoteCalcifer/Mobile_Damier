@@ -1,7 +1,9 @@
 package cstjean.mobile.damier;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -268,7 +270,7 @@ public class DamierFragment extends Fragment {
                 }
             }
             mvtPossible = jeuDeDames.mouvementsPossibles(index, false);
-
+            updateTextHistorique(view);
             if (mvtPossible == null) {
                 mvtPossible = new ArrayList<>();
             }
@@ -291,18 +293,28 @@ public class DamierFragment extends Fragment {
                 }
             }
             updateTextHistorique(view);
-
         } else {
-            peutRetour = false;
-            if (jeuDeDames.getEstTourBlanc()) {
-                updateTextView();
-                Toast.makeText(getContext(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
-            } else {
-                updateTextView();
-                Toast.makeText(getContext(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
-            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // Create an intent to start the MenuActivity
+                    Intent intent = new Intent(getContext(), MenuActivity.class);
+                    if (jeuDeDames.getEstTourBlanc()) {
+                        updateTextView();
+                        Toast.makeText(getContext(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
+                    } else {
+                        updateTextView();
+                        Toast.makeText(getContext(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
+                    }
+                    startActivity(intent);
+                    finish();
+                }
+            }, 5000);
+
         }
     }
+
+
 
     private void updateTextHistorique(View view) {
         TextView textHistorique = view.findViewById(R.id.damier_historique);
@@ -390,7 +402,6 @@ public class DamierFragment extends Fragment {
 
     private void updateTextView() {
         String msg;
-
         if (!jeuDeDames.estPartieTerminee()) {
             if (jeuDeDames.getEstTourBlanc()) {
                 msg = "Au tour de \n" + nomJoueur1;
