@@ -30,7 +30,7 @@ public class TestSingletonJeuDeDames extends TestCase{
     /**
      * Variable du jeu de dames pour les tests.
      */
-    private cstjean.mobile.damier.classe.SingletonJeuDeDames jeu =
+    private final cstjean.mobile.damier.classe.SingletonJeuDeDames jeu =
             cstjean.mobile.damier.classe.SingletonJeuDeDames.getInstance();
 
     /**

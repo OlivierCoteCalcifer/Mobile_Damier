@@ -69,7 +69,6 @@ public class MenuFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         int indexCourant = callbacks.getIndexCourant();
-
         // On va chercher tous les elements du menu.
         LinearLayout menuLayout = view.findViewById(R.id.menu_LinearLayout);
         Button menuButton = view.findViewById(R.id.menu_Bouton);
@@ -117,7 +116,6 @@ public class MenuFragment extends Fragment {
         }
 
     }
-
     private void onButtonClickMenu(LinearLayout menuLayout, Button menuButton, TextView menuText) {
         menuInput.setHint("Entrez votre nom ici");
 

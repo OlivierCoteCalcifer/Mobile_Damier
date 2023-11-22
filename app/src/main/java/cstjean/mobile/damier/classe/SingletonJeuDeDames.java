@@ -802,7 +802,7 @@ public class SingletonJeuDeDames {
             for (Map.Entry<Integer, Pion> i : map.entrySet()) {
                 int position = i.getKey();
                 if (i.getValue() != null) {
-                    if (estMouvementRestant(position, true)) {
+                    if (!estMouvementRestant(position, true)) {
                         cptMvtRestant++;
                     }
                 }

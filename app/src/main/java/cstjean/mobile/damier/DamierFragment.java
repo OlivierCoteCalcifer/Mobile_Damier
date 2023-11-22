@@ -47,7 +47,7 @@ public class DamierFragment extends Fragment {
     /**
      * Instance du Jeu de dames.
      */
-    private SingletonJeuDeDames jeuDeDames = SingletonJeuDeDames.getInstance();
+    private final SingletonJeuDeDames jeuDeDames = SingletonJeuDeDames.getInstance();
     /**
      * Lorsqu'on appuie sur un bouton on prend l'index pour le mettre en memoire pour faciliter
      * l'appel de prisePion.
@@ -169,6 +169,10 @@ public class DamierFragment extends Fragment {
         updateTextView();
         updateTextHistorique(view);
         GridLayout damierBoard = view.findViewById(R.id.board_damier);
+        Button buttonTest = view.findViewById(R.id.damier_button_test);
+        buttonTest.setOnClickListener(v -> {
+            onClickTest();
+        });
 
         int orientation = view.getContext().getResources().getConfiguration().orientation;
         boolean isPortrait = orientation == Configuration.ORIENTATION_PORTRAIT;
@@ -220,6 +224,13 @@ public class DamierFragment extends Fragment {
         buttonReset.setOnClickListener(v -> {
             onClickResetGame(view);
         });
+    }
+
+    private void onClickTest() {
+        jeuDeDames.vider();
+        jeuDeDames.getDamier().ajouterDames(1, new Pion(Pion.Couleur.Blanc), 6);
+        jeuDeDames.getDamier().ajouterPion(16, new Pion(Pion.Couleur.Noir));
+        resetUi();
     }
 
     private void setupBoardWithImageChecker(View view) {
@@ -298,22 +309,20 @@ public class DamierFragment extends Fragment {
                 @Override
                 public void run() {
                     // Create an intent to start the MenuActivity
-                    Intent intent = new Intent(getContext(), MenuActivity.class);
+                    Intent intent = new Intent(getActivity(), MenuActivity.class);
                     if (jeuDeDames.getEstTourBlanc()) {
                         updateTextView();
-                        Toast.makeText(getContext(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
                     } else {
                         updateTextView();
-                        Toast.makeText(getContext(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), nomJoueur2 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
                     }
                     startActivity(intent);
-                    finish();
+                    getActivity().finish();
                 }
             }, 5000);
-
         }
     }
-
 
 
     private void updateTextHistorique(View view) {
