@@ -252,10 +252,6 @@ public class DamierFragment extends Fragment {
     private void onClickButton(int index, View view) {
         if (!jeuDeDames.estPartieTerminee()) {
             resetUi();
-            Pion pion = jeuDeDames.getDamier().getPion(index);
-            /*if (pion != null && checkClickTour(indexBase)) {
-                return;
-            }*/
             List<Integer> mvtPossible;
             if (pionEnable && index != indexBase) {
                 if (mvtPossiblePionBase != null && mvtPossiblePionBase.contains(index)) {
@@ -300,16 +296,6 @@ public class DamierFragment extends Fragment {
             }
         }
     }
-
-/*
-    private boolean checkClickTour(int index) {
-        Pion pion = jeuDeDames.getDamier().getPion(index);
-        if (pion != null) {
-            if (jeuDeDames.getEstTourBlanc()) {
-
-            }
-        }
-    }*/
 
     private void updateTextHistorique(View view) {
         TextView textHistorique = view.findViewById(R.id.damier_historique);
