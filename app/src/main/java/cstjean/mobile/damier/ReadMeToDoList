@@ -49,11 +49,11 @@ Olivier : XXXXXXXX --> Creation des vues et fragments. Design des fragments et b
           XXXXXXXX --> Faire le onClickListener avec toutes les fonctions du damier.
           XXXXXXXX --> Mouvements dans le jeu et les côtés fonctionnels
           XXXXXXXX          Pion
-                            Dames
+          XXXXXXXX          Dames
           XXXXXXXX --> Implementation des messages de victoire et toast de defaite.
           XXXXXXXX --> Prise fonctionnels
           XXXXXXXX          Pion
-                            Dames
+          XXXXXXXX          Dames
 
 
 

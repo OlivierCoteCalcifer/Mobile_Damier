@@ -375,12 +375,13 @@ public class SingletonJeuDeDames {
         // Determiner si le tour était au blanc ou noir et rétablie l'ancien tour
         determinerTour(dernierMouvement);
 
-        Pion pion = new Pion();
+        Pion pionBouger = damier.getPion(positionArrivee);
         if (!estPrise) {
-            retourMouvement(pion, positionArrivee, positionDepart);
+            retourMouvement(pionBouger, positionArrivee, positionDepart);
         } else {
-            retourPrise(pion, index, positionArrivee, positionDepart);
+            retourPrise(pionBouger, index, positionArrivee, positionDepart);
         }
+
         historiqueDeplacementDamier.remove(index);
     }
 
@@ -392,12 +393,19 @@ public class SingletonJeuDeDames {
      * @param positionDepart  Prend en paramètre la position de départ.
      */
     private void retourMouvement(Pion pion, int positionArrivee, int positionDepart) {
-        if (estTourBlanc) {
-            pion = new Pion(Pion.Couleur.Blanc);
+        if (pion.getRepresentation() == 'd' || pion.getRepresentation() == 'D') {
+            if (estTourBlanc) {
+                pion = new Dames(Pion.Couleur.Blanc);
+            } else {
+                pion = new Dames(Pion.Couleur.Noir);
+            }
         } else {
-            pion = new Pion(Pion.Couleur.Noir);
+            if (estTourBlanc) {
+                pion = new Pion(Pion.Couleur.Blanc);
+            } else {
+                pion = new Pion(Pion.Couleur.Noir);
+            }
         }
-
         damier.ajouterPion(positionDepart, pion);
         damier.retirerPion(positionArrivee);
     }
@@ -445,6 +453,8 @@ public class SingletonJeuDeDames {
      * Récupère une liste de mouvements possibles pour le pion ou la dame à la position spécifiée.
      *
      * @param position La position du pion ou de la dame.
+     * @param checkPartieTermine Le boolean est la pour eviter les prises automatiques durant le
+     *                           roulement de estPartieTerminee()
      * @return Une liste de mouvements possibles.
      */
     public List<Integer> mouvementsPossibles(int position, boolean checkPartieTermine) {
@@ -477,26 +487,26 @@ public class SingletonJeuDeDames {
         if (representation == 'P') {
             return isIndexZero ? Direction.getDirectionBasStartBlanc() :
                     Direction.getDirectionBasStartNoir();
-        } else if (representation == 'p') {
+        }
+        if (representation == 'p') {
             return isIndexZero ? Direction.getDirectionHautStartBlanc() :
                     Direction.getDirectionHautStartNoir();
-        } else {
-            if (isIndexZero) {
-                if (borderBoardLeftRight.contains(position)) {
-                    if (Arrays.asList(6, 16, 26, 36).contains(position)) {
-                        return Direction.getDirectionDameStartBlancVersDroite();
-                    }
-                    if (Arrays.asList(15, 25, 35, 45).contains(position)) {
-                        return Direction.getDirectionDameStartNoirVerDroite();
-                    }
+        }
+        if (representation == 'd' || representation == 'D') {
+            if (borderBoardLeftRight.contains(position)) {
+                if (Arrays.asList(6, 16, 26, 36).contains(position)) {
+                    return Direction.getDirectionDameStartNoirVerDroite();
                 }
+                if (Arrays.asList(15, 25, 35, 45).contains(position)) {
+                    return Direction.getDirectionDameStartBlancVersDroite();
+                }
+            }
+            if (isIndexZero) {
                 return Direction.getDirectionStartBlanc();
-            } else {
-                return Direction.getDirectionStartNoir();
             }
         }
+        return Direction.getDirectionStartNoir();
     }
-
 
     /**
      * Évalue le décalage à partir d'une position donnée et ajoute les mouvements possibles.
@@ -574,6 +584,7 @@ public class SingletonJeuDeDames {
                                    List<Integer> mouvements, boolean alternance,
                                    boolean checkPartieTermine) {
         int positionInitiale = nouvellePosition - directionIndex.getValue();
+        int finalPosition = 0;
         Pion pionInitiale = damier.getPion(positionInitiale);
         String directionStart = directionIndex.toString();
         int directionMove = directionIndex.getValue();
@@ -593,20 +604,32 @@ public class SingletonJeuDeDames {
             if (pionPossibleNouvellePosition != null) {
                 break;
             }
-            if (!borderBoardtopBottom.contains(nouvellePosition) || !borderBoardLeftRight.contains(nouvellePosition)) {
+            if (!borderBoardtopBottom.contains(nouvellePosition) ||
+                    !borderBoardLeftRight.contains(nouvellePosition)) {
                 if (directionStart.contains("START_NOIR")) {
                     nouvellePosition += alternance ? directionMove : directionMove + 1;
+                    finalPosition = nouvellePosition + (!alternance ? directionMove : directionMove + 1);
                 } else {
                     nouvellePosition += alternance ? directionMove : directionMove - 1;
+                    finalPosition = nouvellePosition + (!alternance ? directionMove : directionMove - 1);
                 }
-                if (borderBoardLeftRight.contains(nouvellePosition) || borderBoardtopBottom.contains(nouvellePosition)) {
+                if (borderBoardLeftRight.contains(nouvellePosition) ||
+                        borderBoardtopBottom.contains(nouvellePosition)) {
                     if (damier.getPion(nouvellePosition) == null) {
                         mouvements.add(nouvellePosition);
                     }
                     return;
                 }
-                alternance = !alternance;
-                mouvements.add(nouvellePosition);
+                if (damier.getPion(nouvellePosition) == null) {
+                    alternance = !alternance;
+                    mouvements.add(nouvellePosition);
+                }
+                Pion pionPossibleEnnemi = damier.getPion(nouvellePosition);
+                if (pionPossibleEnnemi != null && pionInitiale != null && !checkPartieTermine) {
+                    if (pionPossibleEnnemi.getCouleurPion() != pionInitiale.getCouleurPion()) {
+                        priseDame(positionInitiale, nouvellePosition, finalPosition, pionInitiale);
+                    }
+                }
 
             } else {
                 break;
@@ -944,10 +967,10 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionStartBlanc() {
             return new Direction[]{
-                    BAS_DROIT_START_BLANC,
-                    BAS_GAUCHE_START_BLANC,
-                    HAUT_GAUCHE_START_BLANC,
-                    HAUT_DROIT_START_BLANC
+                BAS_DROIT_START_BLANC,
+                BAS_GAUCHE_START_BLANC,
+                HAUT_GAUCHE_START_BLANC,
+                HAUT_DROIT_START_BLANC
             };
         }
 
@@ -959,24 +982,24 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionStartNoir() {
             return new Direction[]{
-                    BAS_DROIT_START_NOIR,
-                    BAS_GAUCHE_START_NOIR,
-                    HAUT_GAUCHE_START_NOIR,
-                    HAUT_DROIT_START_NOIR
+                BAS_DROIT_START_NOIR,
+                BAS_GAUCHE_START_NOIR,
+                HAUT_GAUCHE_START_NOIR,
+                HAUT_DROIT_START_NOIR
             };
         }
 
         public static Direction[] getDirectionStartNoirVersDroite() {
             return new Direction[]{
-                    BAS_DROIT_START_BLANC,
-                    HAUT_DROIT_START_BLANC
+                BAS_DROIT_START_BLANC,
+                HAUT_DROIT_START_BLANC
             };
         }
 
         public static Direction[] getDirectionStartBlancVersGauche() {
             return new Direction[]{
-                    BAS_DROIT_START_NOIR,
-                    HAUT_DROIT_START_NOIR
+                BAS_DROIT_START_NOIR,
+                HAUT_DROIT_START_NOIR
             };
         }
 
@@ -988,8 +1011,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionBasStartBlanc() {
             return new Direction[]{
-                    BAS_DROIT_START_BLANC,
-                    BAS_GAUCHE_START_BLANC,
+                BAS_DROIT_START_BLANC,
+                BAS_GAUCHE_START_BLANC,
             };
         }
 
@@ -1001,8 +1024,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionBasStartNoir() {
             return new Direction[]{
-                    BAS_DROIT_START_NOIR,
-                    BAS_GAUCHE_START_NOIR,
+                BAS_DROIT_START_NOIR,
+                BAS_GAUCHE_START_NOIR,
             };
         }
 
@@ -1014,8 +1037,8 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionHautStartBlanc() {
             return new Direction[]{
-                    HAUT_GAUCHE_START_BLANC,
-                    HAUT_DROIT_START_BLANC
+                HAUT_GAUCHE_START_BLANC,
+                HAUT_DROIT_START_BLANC
             };
         }
 
@@ -1027,22 +1050,22 @@ public class SingletonJeuDeDames {
          */
         public static Direction[] getDirectionHautStartNoir() {
             return new Direction[]{
-                    HAUT_GAUCHE_START_NOIR,
-                    HAUT_DROIT_START_NOIR
+                HAUT_GAUCHE_START_NOIR,
+                HAUT_DROIT_START_NOIR
             };
         }
 
         public static Direction[] getDirectionDameStartNoirVerDroite() {
             return new Direction[]{
-                    HAUT_DROIT_START_NOIR,
-                    BAS_DROIT_START_NOIR
+                BAS_DROIT_START_NOIR,
+                HAUT_DROIT_START_NOIR
             };
         }
 
         public static Direction[] getDirectionDameStartBlancVersDroite() {
             return new Direction[]{
-                    HAUT_GAUCHE_START_BLANC,
-                    BAS_GAUCHE_START_BLANC
+                BAS_GAUCHE_START_BLANC,
+                HAUT_GAUCHE_START_BLANC
             };
         }
 

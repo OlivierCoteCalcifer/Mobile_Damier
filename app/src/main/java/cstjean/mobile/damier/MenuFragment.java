@@ -11,12 +11,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.material.textfield.TextInputEditText;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -116,6 +113,7 @@ public class MenuFragment extends Fragment {
         }
 
     }
+
     private void onButtonClickMenu(LinearLayout menuLayout, Button menuButton, TextView menuText) {
         menuInput.setHint("Entrez votre nom ici");
 

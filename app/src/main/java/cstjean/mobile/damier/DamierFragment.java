@@ -15,17 +15,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
+import cstjean.mobile.damier.classe.Dames;
+import cstjean.mobile.damier.classe.Pion;
+import cstjean.mobile.damier.classe.SingletonJeuDeDames;
 import java.util.ArrayList;
 import java.util.IllegalFormatException;
 import java.util.List;
-
-import cstjean.mobile.damier.classe.Pion;
-import cstjean.mobile.damier.classe.SingletonJeuDeDames;
 
 /**
  * Cette classe est le fragment qui va contenir la logique du damier
@@ -61,7 +59,7 @@ public class DamierFragment extends Fragment {
     /**
      * TextView pour le message des tours des joueurs.
      */
-    private TextView message_Board;
+    private TextView messageBoard;
     /**
      * Cette variable est pour l'initialisation du board dans le onCreateView et
      * setupBoardWithImageChecker.
@@ -147,7 +145,7 @@ public class DamierFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         // Sauvegarde les variables lors de la rotation de l'appareil.
-        outState.putString("TextViewContent", message_Board.getText().toString());
+        outState.putString("TextViewContent", messageBoard.getText().toString());
         outState.putBoolean("EstPartieCommence", estPartieCommence);
         outState.putBoolean("PeutRetour", peutRetour);
 
@@ -158,14 +156,11 @@ public class DamierFragment extends Fragment {
             ImageButton button = requireView().findViewById(
                     getResources().getIdentifier(btnId,
                             "id", requireContext().getPackageName()));
-
-            // Save the resource ID of the drawable
-            //outState.putInt("ImageButtonDrawable_" + i, (Integer) button.getTag());
         }
     }
 
     private void setupBoard(View view) {
-        message_Board = view.findViewById(R.id.damier_message);
+        messageBoard = view.findViewById(R.id.damier_message);
         updateTextView();
         updateTextHistorique(view);
         GridLayout damierBoard = view.findViewById(R.id.board_damier);
@@ -228,8 +223,8 @@ public class DamierFragment extends Fragment {
 
     private void onClickTest() {
         jeuDeDames.vider();
-        jeuDeDames.getDamier().ajouterDames(1, new Pion(Pion.Couleur.Blanc), 6);
-        jeuDeDames.getDamier().ajouterPion(16, new Pion(Pion.Couleur.Noir));
+        jeuDeDames.getDamier().ajouterPion(15, new Dames(Pion.Couleur.Blanc));
+        jeuDeDames.getDamier().ajouterPion(24, new Pion(Pion.Couleur.Noir));
         resetUi();
     }
 
@@ -309,7 +304,7 @@ public class DamierFragment extends Fragment {
                 @Override
                 public void run() {
                     // Create an intent to start the MenuActivity
-                    Intent intent = new Intent(getActivity(), MenuActivity.class);
+                    Intent intent = new Intent(getContext(), MenuActivity.class);
                     if (jeuDeDames.getEstTourBlanc()) {
                         updateTextView();
                         Toast.makeText(getActivity(), nomJoueur1 + ", vous avez perdu...", Toast.LENGTH_SHORT).show();
@@ -320,10 +315,9 @@ public class DamierFragment extends Fragment {
                     startActivity(intent);
                     getActivity().finish();
                 }
-            }, 5000);
+            }, 2000);
         }
     }
-
 
     private void updateTextHistorique(View view) {
         TextView textHistorique = view.findViewById(R.id.damier_historique);
@@ -341,7 +335,7 @@ public class DamierFragment extends Fragment {
     private void handleMouvementJoueur(int index, List<Integer> mvtPossible) {
         if (mvtPossiblePionBase.isEmpty()) {
             pionEnable = true;
-            ajoutUIOnClick(index, mvtPossible);
+            ajoutUiOnClick(index, mvtPossible);
             indexBase = index;
             mvtPossiblePionBase = new ArrayList<>(mvtPossible);
         } else if (pionEnable && mvtPossiblePionBase.contains(index) && indexBase != null) {
@@ -364,7 +358,7 @@ public class DamierFragment extends Fragment {
      * @param index       Index du pion selectionné.
      * @param mvtPossible Liste de mouvements possibles.
      */
-    private void ajoutUIOnClick(int index, List<Integer> mvtPossible) {
+    private void ajoutUiOnClick(int index, List<Integer> mvtPossible) {
         String btnid = String.valueOf(index);
         int ressId = getResources().getIdentifier(btnid, "id", requireContext().getPackageName());
         ImageButton moveButton = getView().findViewById(ressId);
@@ -424,7 +418,7 @@ public class DamierFragment extends Fragment {
                 msg = "Félicitations " + nomJoueur2 + "!!!";
             }
         }
-        message_Board.setText(msg);
+        messageBoard.setText(msg);
     }
 
     private void onClickRetourMouvement(View view) {
@@ -433,9 +427,9 @@ public class DamierFragment extends Fragment {
         if (peutRetour && jeuDeDames.getHistoriqueDeplacementDamier().size() > 0) {
             jeuDeDames.retourPartie();
             updateTextHistorique(view);
-        } else
+        } else {
             Toast.makeText(getContext(), "Retour impossible", Toast.LENGTH_SHORT).show();
-
+        }
         resetUi();
     }
 
