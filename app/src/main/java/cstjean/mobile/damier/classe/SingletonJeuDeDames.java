@@ -574,11 +574,13 @@ public class SingletonJeuDeDames {
                                       List<Integer> mouvements, boolean checkPartieTermine) {
         Pion pion = damier.getPion(position);
         int positionInitiale = nouvellePosition - directionIndex.getValue();
+
         // Ce boolean est pour une alternance -1 ou + 1 dans le mouvement de diagonale de la dame.
         boolean alternance = false;
 
         if (pion != null && !estPionOuDame(position)) {
             mouvements.add(nouvellePosition);
+
             // Utilise gestion AlternanceDame pour la logique de déplacement de la dame
             gestionAlternance(nouvellePosition, directionIndex, mouvements, alternance, checkPartieTermine);
         }
@@ -614,12 +616,14 @@ public class SingletonJeuDeDames {
             mouvements.add(nouvellePosition);
             return;
         }
-        // Add final position if initial piece is a pawn or a dame
+
+        // Ajoute la position final si c'est un pion ou une dame
         if (pionInitiale != null && estPionOuDame(positionInitiale)) {
             mouvements.add(nouvellePosition);
             return;
         }
-        // Loop for handling the dame's diagonal movement
+
+        // Boucle qui s'occupe des mouvements de la dame
         while (estPositionValide(nouvellePosition)) {
             Pion pionPossibleNouvellePosition = damier.getPion(nouvellePosition);
             if (pionPossibleNouvellePosition != null) {

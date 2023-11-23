@@ -218,13 +218,6 @@ public class DamierFragment extends Fragment {
         });
     }
 
-    private void onClickTest() {
-        jeuDeDames.vider();
-        jeuDeDames.getDamier().ajouterPion(12, new Dames(Pion.Couleur.Blanc));
-        jeuDeDames.getDamier().ajouterPion(42, new Pion(Pion.Couleur.Noir));
-        resetUi();
-    }
-
     private void setupBoardWithImageChecker(View view) {
         if (!jeuDeDames.getEstPartieCommence()) {
             jeuDeDames.reset();
@@ -432,7 +425,6 @@ public class DamierFragment extends Fragment {
     }
 
     private void onClickRetourMouvement(View view) {
-        // En supposant ici que l'on peut seulement faire un retour à la fois
         // Ligne 257 - 273 --> Endroit ou l'on reset le peutRetour lors d'un mouvement.
         if (peutRetour && jeuDeDames.getHistoriqueDeplacementDamier().size() > 0) {
             jeuDeDames.retourPartie();
