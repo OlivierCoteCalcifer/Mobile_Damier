@@ -1,24 +1,19 @@
 package cstjean.mobile.damier;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * Cette classe regroupe tout les tests dans un morceau.
  */
-public class TestComplet extends TestCase {
-    /**
-     * Cette fonction regroupe les tests et retourne la suite de tests.
-     *
-     * @return suite Paramètre qui inclut les suites de Tests.
-     */
-    public static TestSuite suite() {
-        TestSuite suite = new TestSuite();
-        suite.addTestSuite(TestPion.class);
-        suite.addTestSuite(TestDamier.class);
-        suite.addTestSuite(TestAffichageDamier.class);
-        suite.addTestSuite(TestDames.class);
-        suite.addTestSuite(TestSingletonJeuDeDames.class);
-        return suite;
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestPion.class,
+    TestDamier.class,
+    TestAffichageDamier.class,
+    TestDames.class,
+    TestSingletonJeuDeDames.class
+})
+public class TestComplet {
+    // This class remains empty, it is used only as a holder for the above annotations
 }

@@ -199,7 +199,6 @@ public class SingletonJeuDeDames {
                 damier.ajouterPion(positionArrivee, pion);
                 damier.retirerPion(positionDepart);
                 estTourBlanc = !estTourBlanc;
-                return;
             }
         } else {
             throw new IllegalArgumentException("Mouvement impossible");
@@ -381,7 +380,7 @@ public class SingletonJeuDeDames {
             positionDepart = Integer.parseInt(Objects.requireNonNull(matcher.group(1)));
             String separator = matcher.group(2);
 
-            if (separator.equals("x")) {
+            if (Objects.equals(separator, "x")) {
                 estPrise = true;
             }
             positionArrivee = Integer.parseInt(Objects.requireNonNull(matcher.group(3)));
@@ -559,8 +558,6 @@ public class SingletonJeuDeDames {
                             prisePion(position, nouvellePosition, nouvellePosition + positionFinal);
                         }
                     }
-                } else {
-                    mouvements.add(nouvellePosition);
                 }
             }
         }
@@ -608,7 +605,7 @@ public class SingletonJeuDeDames {
                                    List<Integer> mouvements, boolean alternance,
                                    boolean checkPartieTermine) {
         int positionInitiale = nouvellePosition - directionIndex.getValue();
-        int finalPosition = 0;
+        int finalPosition;
         Pion pionInitiale = damier.getPion(positionInitiale);
         String directionStart = directionIndex.toString();
         int directionMove = directionIndex.getValue();
@@ -651,8 +648,8 @@ public class SingletonJeuDeDames {
                 if (pionPossibleEnnemi != null && pionInitiale != null && !checkPartieTermine) {
                     if (pionPossibleEnnemi.getCouleurPion() != pionInitiale.getCouleurPion()) {
                         priseDame(positionInitiale, nouvellePosition, finalPosition, pionInitiale);
-                        break;
                     }
+                    break;
                 }
 
             } else {
