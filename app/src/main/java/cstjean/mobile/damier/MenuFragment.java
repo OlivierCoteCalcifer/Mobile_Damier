@@ -67,10 +67,10 @@ public class MenuFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         int indexCourant = callbacks.getIndexCourant();
         // On va chercher tous les elements du menu.
+        menuInput = new TextInputEditText(getContext());
         LinearLayout menuLayout = view.findViewById(R.id.menu_LinearLayout);
         Button menuButton = view.findViewById(R.id.menu_Bouton);
         TextView menuText = view.findViewById(R.id.menu_TextView);
-        menuInput = new TextInputEditText(getContext());
         // Ajustement pour le style du TextInputEditText
         int widthInDp = 200;
         float scale = getResources().getDisplayMetrics().density;
@@ -82,7 +82,7 @@ public class MenuFragment extends Fragment {
         );
 
         menuInput.setLayoutParams(layoutParams);
-
+        menuInput.setTag("menuInput");
         // Listener pour le bouton.
         menuButton.setOnClickListener(v -> {
             onButtonClickMenu(menuLayout, menuButton, menuText);

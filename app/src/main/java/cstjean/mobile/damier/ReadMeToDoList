@@ -54,7 +54,8 @@ Olivier : XXXXXXXX --> Creation des vues et fragments. Design des fragments et b
           XXXXXXXX --> Prise fonctionnels
           XXXXXXXX          Pion
           XXXXXXXX          Dames
-
+          XXXXXXXX --> Ajuster le reste des tests Singleton selon les updates de fonctions.
+          XXXXXXXX --> Faire les tests instrumentés.
 
 
 
@@ -66,7 +67,7 @@ Thomas : XXXXXXXX --> Modifications des images pour les pièces. (Terminé le 10
          XXXXXXXX --> Empêcher le retourPartie quand on change l'orientation du téléphone. (Terminé le 21 novembre)
          XXXXXXXX --> Mettre des commentaires dans les fonctions pour simplifier la compréhension d'un autre programmeur.
          XXXXXXXX --> Permettre de retourPartie une dame vers un pion. (Terminé le 22 novembre)
-         --> Ajuster les tests du singleton.
+         XXXXXXXX --> Ajuster les tests du singleton pour le retour partie.
          --> Afficher l'historique des mouvements, juste un ou la liste au complet, voir avec Sébastien.***
 
 Both:
@@ -107,10 +108,10 @@ XXXXXXXX     à un état précédent du damier.
 XXXXXXXX --> Lorsqu’on touche à une des pièces du joueur dont c’est le tour, vous devez colorer les cases où le
 XXXXXXXX     déplacement est possible pour la pièce.
 
---> À la fin de la partie, le nom du gagnant doit être affiché et on doit pouvoir revenir à l’écran de choix des
+XXXXXXXX --> À la fin de la partie, le nom du gagnant doit être affiché et on doit pouvoir revenir à l’écran de choix des
     noms pour démarrer une nouvelle partie.
 
---> Vous devez faire des tests instrumentés pour tester l’interface de saisie des noms en début de partie.
+XXXXXXXX --> Vous devez faire des tests instrumentés pour tester l’interface de saisie des noms en début de partie.
 
 XXXXXXXX --> Vous n’avez pas à faire des tests d’interface pour le jeu de dames.
 

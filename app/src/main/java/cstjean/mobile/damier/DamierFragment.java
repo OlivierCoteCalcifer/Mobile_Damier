@@ -216,10 +216,6 @@ public class DamierFragment extends Fragment {
         buttonReset.setOnClickListener(v -> {
             onClickResetGame(view);
         });
-        Button buttonTest = view.findViewById(R.id.damier_button_test);
-        buttonTest.setOnClickListener(v -> {
-            onClickTest();
-        });
     }
 
     private void onClickTest() {

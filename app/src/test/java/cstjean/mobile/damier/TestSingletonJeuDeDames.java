@@ -1,10 +1,11 @@
 package cstjean.mobile.damier;
 
-import cstjean.mobile.damier.classe.AffichageDamier;
 import cstjean.mobile.damier.classe.Dames;
 import cstjean.mobile.damier.classe.Pion;
 import cstjean.mobile.damier.classe.SingletonJeuDeDames;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import junit.framework.TestCase;
@@ -41,6 +42,27 @@ public class TestSingletonJeuDeDames extends TestCase {
     }
 
     /**
+     * Ce test verifie si les pions sur des emplacements précis du damier redonne le bon mouvement.
+     */
+    @Test
+    public void testMouvementBorder() {
+        jeu.reset();
+        jeu.vider();
+        jeu.getDamier().ajouterPion(50, new Pion(Pion.Couleur.Blanc));
+        assertEquals("[44, 45]", jeu.mouvementsPossibles(50, false)
+                .toString());
+        jeu.getDamier().ajouterPion(1, new Pion(Pion.Couleur.Noir));
+        assertEquals("[7, 6]", jeu.mouvementsPossibles(1, false)
+                .toString());
+        assertEquals("[]", jeu.mouvementsPossibles(2, false)
+                .toString());
+        List<Integer> mvt = new ArrayList<>();
+        assertFalse(jeu.checkBoardPion(2, null, mvt));
+        assertFalse(jeu.handlePionBlancMovesBorder(2, mvt));
+        assertFalse(jeu.handlePionNoirMovesBorder(2, mvt));
+    }
+
+    /**
      * Verifie la prise d'un pion noir sur un blanc.
      */
     @Test
@@ -51,6 +73,13 @@ public class TestSingletonJeuDeDames extends TestCase {
         jeu.bouger(31, 26);
         jeu.prisePion(25, 30, 35);
         Assert.assertNotNull(jeu.getDamier().getPion(35));
+        jeu.reset();
+        jeu.vider();
+        jeu.getDamier().ajouterPion(20, new Pion(Pion.Couleur.Noir));
+        jeu.getDamier().ajouterPion(29, new Pion(Pion.Couleur.Blanc));
+        jeu.bouger(29, 24);
+        jeu.bouger(20, 24);
+        assertNotNull(jeu.getDamier().getPion(29));
     }
 
     /**
@@ -179,19 +208,6 @@ public class TestSingletonJeuDeDames extends TestCase {
     }
 
     /**
-     * Verifie les deplacements d'une dame.
-     */
-    @Test
-    public void testDeplacementDame() {
-        jeu.reset();
-        Pion pionBlanc = new Dames(Pion.Couleur.Blanc);
-        jeu.getDamier().ajouterPion(25, pionBlanc);
-        jeu.bouger(25, 30);
-        Assert.assertNull(jeu.getDamier().getListPion().get(25));
-        Assert.assertTrue(jeu.getDamier().getListPion().get(30) instanceof Dames);
-    }
-
-    /**
      * Verifie les deplacements invalide de la dame.
      */
     @Test
@@ -203,18 +219,6 @@ public class TestSingletonJeuDeDames extends TestCase {
         try {
             jeu.bouger(25, 24);
             Assert.fail("Un IllegalArgumentException devrait être lancée.");
-        } catch (IllegalArgumentException exMess) {
-            Assert.assertEquals("Mouvement impossible", exMess.getMessage());
-        }
-        try {
-            jeu.reset();
-            jeu.vider();
-            Pion pionBlanc2 = new Dames(Pion.Couleur.Blanc);
-            jeu.getDamier().ajouterPion(25, pionBlanc2);
-            jeu.getDamier().ajouterPion(20, new Pion(Pion.Couleur.Blanc));
-            jeu.bouger(25, 20);
-            Assert.fail("Un IllegalArgumentException devrait être lancée.");
-            System.out.println(AffichageDamier.getAffichage(jeu.getDamier()));
         } catch (IllegalArgumentException exMess) {
             Assert.assertEquals("Mouvement impossible", exMess.getMessage());
         }
@@ -233,6 +237,20 @@ public class TestSingletonJeuDeDames extends TestCase {
         jeu.prisePion(24, 20, 15);
         Assert.assertNull(jeu.getDamier().getListPion().get(20));
         Assert.assertTrue(jeu.getDamier().getListPion().get(15) instanceof Dames);
+        jeu.reset();
+        jeu.vider();
+        jeu.getDamier().ajouterPion(50, new Dames(Pion.Couleur.Blanc));
+        jeu.getDamier().ajouterPion(44, new Pion(Pion.Couleur.Noir));
+        assertEquals("[]", jeu.mouvementsPossibles(50, false)
+                .toString());
+        assertNotNull(jeu.getDamier().getPion(39));
+        jeu.reset();
+        jeu.vider();
+        jeu.getDamier().ajouterPion(50, new Dames(Pion.Couleur.Blanc));
+        jeu.getDamier().ajouterPion(39, new Pion(Pion.Couleur.Noir));
+        assertEquals("[44]", jeu.mouvementsPossibles(50, false)
+                .toString());
+
     }
 
     /**
@@ -289,8 +307,6 @@ public class TestSingletonJeuDeDames extends TestCase {
         Pion dameNoir = new Dames(Pion.Couleur.Noir);
         jeu.getDamier().ajouterPion(27, dameNoir);
         jeu.bouger(33, 29);
-        System.out.println(jeu.getEstTourBlanc());
-        System.out.println(AffichageDamier.getAffichage(jeu.getDamier()));
         jeu.bouger(27, 22);
         Assert.assertEquals("(27-22)", jeu.getHistoriqueDeplacementDamierPosition(1));
     }
@@ -380,6 +396,25 @@ public class TestSingletonJeuDeDames extends TestCase {
     @Test
     public void testMouvementsPossiblesDames() {
         jeu.reset();
+        jeu.vider();
+        Pion pionBlanc = new Dames(Pion.Couleur.Blanc);
+        jeu.getDamier().ajouterPion(25, pionBlanc);
+        jeu.bouger(25, 30);
+        Assert.assertNull(jeu.getDamier().getListPion().get(25));
+        Assert.assertTrue(jeu.getDamier().getListPion().get(30) instanceof Dames);
+        jeu.reset();
+        jeu.vider();
+        jeu.getDamier().ajouterPion(44, new Dames(Pion.Couleur.Blanc));
+        assertEquals("[50, 49, 39, 33, 28, 22, 17, 11, 6, 40, 35]",
+                jeu.mouvementsPossibles(44, false).toString());
+        // Verifie si on envoie le bon enum pour une dame sur le cote gauche.
+        jeu.reset();
+        jeu.vider();
+        jeu.getDamier().ajouterPion(16, new Dames(Pion.Couleur.Blanc));
+        assertEquals("[21, 27, 32, 38, 43, 49, 11, 7, 2]",
+                jeu.mouvementsPossibles(16, true).toString());
+
+        jeu.reset();
         Dames dameBlanc = new Dames(Pion.Couleur.Blanc);
         TreeMap<Integer, Pion> map = jeu.getPionRestants();
         for (Map.Entry<Integer, Pion> i : map.entrySet()) {
@@ -446,10 +481,20 @@ public class TestSingletonJeuDeDames extends TestCase {
         jeu.reset();
         jeu.vider();
         jeu.getDamier().ajouterPion(4, pionNoir);
-        Pion pionBlanc = new Pion(Pion.Couleur.Blanc);
+        pionBlanc = new Pion(Pion.Couleur.Blanc);
         jeu.getDamier().ajouterPion(43, pionBlanc);
 
-        Assert.assertEquals("[38, 39]", jeu.mouvementsPossibles(43, true).toString());
+        Assert.assertEquals("[38, 39]", jeu
+                .mouvementsPossibles(43, true).toString());
+
+        jeu.reset();
+        jeu.vider();
+        jeu.getDamier().ajouterPion(50, dameBlanc);
+        assertEquals("[44, 39, 33, 28, 22, 17, 11, 6, 45]",
+                jeu.mouvementsPossibles(50, true).toString());
+        jeu.getDamier().ajouterPion(5, dameBlanc);
+        assertEquals("[10, 14, 19, 23, 28, 32, 37, 41, 46]",
+                jeu.mouvementsPossibles(5, true).toString());
     }
 
     /**
@@ -492,6 +537,24 @@ public class TestSingletonJeuDeDames extends TestCase {
                 Arrays.toString(directionArray));
 
         Assert.assertEquals("[-5, -4]", SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
+
+        directionArray = cstjean.mobile.damier.classe
+                .SingletonJeuDeDames.Direction.getDirectionDameStartNoirVerDroite();
+        Assert.assertEquals("[5, -5]", SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
+        Assert.assertEquals("[BAS_DROIT_START_NOIR, HAUT_DROIT_START_NOIR]",
+                Arrays.toString(directionArray));
+
+        directionArray = cstjean.mobile.damier.classe
+                .SingletonJeuDeDames.Direction.getDirectionDameStartBlancVersDroite();
+        Assert.assertEquals("[5, -5]", SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
+        Assert.assertEquals("[BAS_GAUCHE_START_BLANC, HAUT_GAUCHE_START_BLANC]",
+                Arrays.toString(directionArray));
+
+        directionArray = cstjean.mobile.damier.classe
+                .SingletonJeuDeDames.Direction.getDirectionStartBlancFifthCase();
+        Assert.assertEquals("[5]", SingletonJeuDeDames.Direction.getAllValue(directionArray).toString());
+        Assert.assertEquals("[BAS_GAUCHE_START_BLANC]",
+                Arrays.toString(directionArray));
     }
 
     @Test
@@ -517,7 +580,7 @@ public class TestSingletonJeuDeDames extends TestCase {
     }
 
     @Test
-    public void testRetourPartiePromotion(){
+    public void testRetourPartiePromotion() {
         jeu.reset();
         jeu.vider();
         jeu.getDamier().ajouterPion(42, new Pion(Pion.Couleur.Noir));
@@ -527,7 +590,7 @@ public class TestSingletonJeuDeDames extends TestCase {
         jeu.bouger(1, 6);
         jeu.retourPartie();
         jeu.retourPartie();
-        assertEquals('P', jeu.getDamier().getPion(42).getRepresentation());
+        Assert.assertEquals('P', jeu.getDamier().getPion(42).getRepresentation());
     }
 
     @Test
@@ -536,45 +599,45 @@ public class TestSingletonJeuDeDames extends TestCase {
         jeu.vider();
         // Verification pion Noir sur border gauche et droit
         jeu.getDamier().ajouterPion(6, new Pion(Pion.Couleur.Noir));
-        assertEquals("[11]", jeu.mouvementsPossibles(6, true).toString());
+        Assert.assertEquals("[11]", jeu.mouvementsPossibles(6, true).toString());
         jeu.getDamier().ajouterPion(16, new Pion(Pion.Couleur.Noir));
-        assertEquals("[21]", jeu.mouvementsPossibles(16, true).toString());
+        Assert.assertEquals("[21]", jeu.mouvementsPossibles(16, true).toString());
         jeu.getDamier().ajouterPion(26, new Pion(Pion.Couleur.Noir));
-        assertEquals("[31]", jeu.mouvementsPossibles(26, true).toString());
+        Assert.assertEquals("[31]", jeu.mouvementsPossibles(26, true).toString());
         jeu.getDamier().ajouterPion(36, new Pion(Pion.Couleur.Noir));
-        assertEquals("[41]", jeu.mouvementsPossibles(36, true).toString());
+        Assert.assertEquals("[41]", jeu.mouvementsPossibles(36, true).toString());
 
         jeu.getDamier().ajouterPion(5, new Pion(Pion.Couleur.Noir));
-        assertEquals("[10]", jeu.mouvementsPossibles(5, true).toString());
+        Assert.assertEquals("[10]", jeu.mouvementsPossibles(5, true).toString());
         jeu.getDamier().ajouterPion(15, new Pion(Pion.Couleur.Noir));
-        assertEquals("[20]", jeu.mouvementsPossibles(15, true).toString());
+        Assert.assertEquals("[20]", jeu.mouvementsPossibles(15, true).toString());
         jeu.getDamier().ajouterPion(25, new Pion(Pion.Couleur.Noir));
-        assertEquals("[30]", jeu.mouvementsPossibles(25, true).toString());
+        Assert.assertEquals("[30]", jeu.mouvementsPossibles(25, true).toString());
         jeu.getDamier().ajouterPion(35, new Pion(Pion.Couleur.Noir));
-        assertEquals("[40]", jeu.mouvementsPossibles(35, true).toString());
+        Assert.assertEquals("[40]", jeu.mouvementsPossibles(35, true).toString());
         jeu.getDamier().ajouterPion(45, new Pion(Pion.Couleur.Noir));
-        assertEquals("[50]", jeu.mouvementsPossibles(45, true).toString());
+        Assert.assertEquals("[50]", jeu.mouvementsPossibles(45, true).toString());
 
         // Verification pion Blanc sur border gauche et droit
         jeu.vider();
         jeu.getDamier().ajouterPion(6, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[1]", jeu.mouvementsPossibles(6, true).toString());
+        Assert.assertEquals("[1]", jeu.mouvementsPossibles(6, true).toString());
         jeu.getDamier().ajouterPion(16, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[11]", jeu.mouvementsPossibles(16, true).toString());
+        Assert.assertEquals("[11]", jeu.mouvementsPossibles(16, true).toString());
         jeu.getDamier().ajouterPion(26, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[21]", jeu.mouvementsPossibles(26, true).toString());
+        Assert.assertEquals("[21]", jeu.mouvementsPossibles(26, true).toString());
         jeu.getDamier().ajouterPion(36, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[31]", jeu.mouvementsPossibles(36, true).toString());
+        Assert.assertEquals("[31]", jeu.mouvementsPossibles(36, true).toString());
         jeu.getDamier().ajouterPion(46, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[41]", jeu.mouvementsPossibles(46, true).toString());
+        Assert.assertEquals("[41]", jeu.mouvementsPossibles(46, true).toString());
 
         jeu.getDamier().ajouterPion(15, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[10]", jeu.mouvementsPossibles(15, true).toString());
+        Assert.assertEquals("[10]", jeu.mouvementsPossibles(15, true).toString());
         jeu.getDamier().ajouterPion(25, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[20]", jeu.mouvementsPossibles(25, true).toString());
+        Assert.assertEquals("[20]", jeu.mouvementsPossibles(25, true).toString());
         jeu.getDamier().ajouterPion(35, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[30]", jeu.mouvementsPossibles(35, true).toString());
+        Assert.assertEquals("[30]", jeu.mouvementsPossibles(35, true).toString());
         jeu.getDamier().ajouterPion(45, new Pion(Pion.Couleur.Blanc));
-        assertEquals("[40]", jeu.mouvementsPossibles(45, true).toString());
+        Assert.assertEquals("[40]", jeu.mouvementsPossibles(45, true).toString());
     }
 }
